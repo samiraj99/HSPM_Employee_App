@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.sam.hspm_employee_app" >
+    package="com.sam.hspm_employee_app">
 
     <application
         android:allowBackup="true"
@@ -8,8 +8,9 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
-        <activity android:name=".LoginActivity" >
+        android:theme="@style/AppTheme">
+        <activity android:name=".AcceptedRequest"></activity>
+        <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -17,7 +18,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity" />
-        <activity android:name=".RequestDetails"/>
+        <activity android:name=".RequestDetails" />
     </application>
 
 </manifest>

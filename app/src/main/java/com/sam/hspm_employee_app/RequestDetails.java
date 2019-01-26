@@ -7,11 +7,17 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,31 +33,39 @@ public class RequestDetails extends AppCompatActivity {
     private static final String TAG = "RequestDetails";
     DatabaseReference databaseReference;
     FirebaseDatabase firebaseDatabase;
-    private static String RequestId,UserId,Address;
+    private static String RequestId,UserId,Address,uid;
     private static String PcType, ProblemType, SpecifiedProblem;
     private static double Lat, Lng;
     FirebaseApp clientApp ;
     TextView TV_Address,TV_PcType,TV_ProblemType,TV_SpecifiedProblem;
     ProgressDialog dialog;
+    FirebaseAuth firebaseAuth;
+    FirebaseUser  firebaseUser;
+    Button BT_Accept;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_request_details);
 
         FirebaseOptions options = new FirebaseOptions.Builder()
-                .setApplicationId("1:638610105243:android:9f969d33e4861427")
-                .setApiKey("AIzaSyAkJA2LdvbCtbFzTMux4AgV_93hcAO8AbI")
-                .setDatabaseUrl("https://hspm-client-app.firebaseio.com/")
+                .setApplicationId(getString(R.string.ApplicationId))
+                .setApiKey(getString(R.string.ApiKey))
+                .setDatabaseUrl(getString(R.string.DatabaseUrl))
                 .build();
         FirebaseApp.initializeApp(this, options, "ClientDatabase");
         clientApp = FirebaseApp.getInstance("ClientDatabase");
         firebaseDatabase = FirebaseDatabase.getInstance(clientApp);
         databaseReference = firebaseDatabase.getReference();
 
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
+        uid = firebaseAuth.getUid();
+
         TV_Address = findViewById(R.id.TextView_Address);
         TV_PcType = findViewById(R.id.TextView_PcType);
         TV_ProblemType = findViewById(R.id.TextView_ProblemType);
         TV_SpecifiedProblem = findViewById(R.id.TextView_SpecifiedType);
+        BT_Accept = findViewById(R.id.Button_Accept);
 
         dialog = new ProgressDialog(this);
         dialog.setMessage("Loading");
@@ -80,7 +94,7 @@ public class RequestDetails extends AppCompatActivity {
                     dialog.dismiss();
                     TV_Address.setText(Address);
                     if (SpecifiedProblem.isEmpty()){
-                        TV_SpecifiedProblem.setText("Not Specified");
+                        TV_SpecifiedProblem.setText(getString(R.string.notspecified));
                     }else {
                         TV_SpecifiedProblem.setText(SpecifiedProblem);
                     }
@@ -99,7 +113,17 @@ public class RequestDetails extends AppCompatActivity {
             }
         });
 
+        BT_Accept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                databaseReference.child("Services").child(RequestId).child("RequestAcceptedBy").setValue(uid).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
 
+                    }
+                });
+            }
+        });
 
     }
 
