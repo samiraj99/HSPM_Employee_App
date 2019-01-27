@@ -47,14 +47,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         FirebaseOptions options = new FirebaseOptions.Builder()
-                .setApplicationId("1:638610105243:android:9f969d33e4861427")
-                .setApiKey("AIzaSyAkJA2LdvbCtbFzTMux4AgV_93hcAO8AbI")
-                .setDatabaseUrl("https://hspm-client-app.firebaseio.com/")
+                .setApplicationId(getString(R.string.ApplicationId))
+                .setApiKey(getString(R.string.ApiKey))
+                .setDatabaseUrl(getString(R.string.DatabaseUrl))
                 .build();
         FirebaseApp.initializeApp(this,options,"ClientDatabase");
         clientApp = FirebaseApp.getInstance("ClientDatabase");
         firebaseDatabase = FirebaseDatabase.getInstance(clientApp);
         databaseReference = firebaseDatabase.getReference();
+
         listView = findViewById(R.id.ListView);
         Button BT_SignOut = findViewById(R.id.Button_SignOut);
         firebaseAuth = FirebaseAuth.getInstance();
@@ -77,24 +78,37 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                String status = dataSnapshot.child("Status").getValue().toString();
+                if (status.equals("true")){
+                    try {
+                        Co_Ordinates co_ordinates = dataSnapshot.child("Address").child("Co_Ordinates").getValue(Co_Ordinates.class);
+                        String Address = convertAddress(new LatLng(co_ordinates.Lat, co_ordinates.Lng));
+                        AddressLits.remove(Address);
+                        String Id = dataSnapshot.getKey();
+                        RequestIdLits.remove(Id);
+                        adapter.notifyDataSetChanged();
 
-            }
+                    }catch(Exception e){
+                        Log.e(TAG, "onChildRemoved: Exception " + e.getMessage());
+                    }
+                }
+               }
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
                 try {
-                    Co_Ordinates co_ordinates = dataSnapshot.child("Address").child("Co_Ordinates").getValue(Co_Ordinates.class);
-                    String Address = convertAddress(new LatLng(co_ordinates.Lat, co_ordinates.Lng));
-                    AddressLits.remove(Address);
-                    String Id = dataSnapshot.getKey();
-                    RequestIdLits.remove(Id);
-                    adapter.notifyDataSetChanged();
-                }catch (Exception e){
-                    Log.e(TAG, "onChildRemoved: Exception "+e.getMessage());
-                }
-            }
+                        Co_Ordinates co_ordinates = dataSnapshot.child("Address").child("Co_Ordinates").getValue(Co_Ordinates.class);
+                        String Address = convertAddress(new LatLng(co_ordinates.Lat, co_ordinates.Lng));
+                        AddressLits.remove(Address);
+                        String Id = dataSnapshot.getKey();
+                        RequestIdLits.remove(Id);
+                        adapter.notifyDataSetChanged();
 
+                }catch(Exception e){
+                        Log.e(TAG, "onChildRemoved: Exception " + e.getMessage());
+                    }
+                }
             @Override
             public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
@@ -129,6 +143,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void retriveData(DataSnapshot dataSnapshot) {
+       String status = dataSnapshot.child("Status").getValue().toString();
+        if (status.equals("false")){
          RequestIdLits.add(dataSnapshot.getKey());
         for (DataSnapshot ds: dataSnapshot.child("Address").getChildren()) {
             try{
@@ -139,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
             }catch (Exception e){
                 Log.d(TAG, "retriveData: Exception "+ e.getMessage());
             }
+        }
         }
     }
     private String convertAddress(LatLng latLng) {

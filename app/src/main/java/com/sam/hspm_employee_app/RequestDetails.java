@@ -116,10 +116,11 @@ public class RequestDetails extends AppCompatActivity {
         BT_Accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                databaseReference.child("Services").child(RequestId).child("Status").setValue("true");
                 databaseReference.child("Services").child(RequestId).child("RequestAcceptedBy").setValue(uid).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-
+                        Log.d(TAG, "onComplete: REQUEST ACCEPTED");
                     }
                 });
             }
