@@ -4,23 +4,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
+
     <ListView
         android:id="@+id/ListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
         android:layout_above="@+id/Button_SignOut"
         android:layout_alignParentTop="true"
-        />
+        android:layout_margin="10dp" />
+
     <Button
         android:id="@+id/Button_SignOut"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="SignOut"
-        android:background="@color/colorPrimary"
-        android:textColor="#fff"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
         android:layout_margin="10dp"
+        android:background="@color/colorPrimary"
+        android:text="@string/signout"
+        android:textColor="#fff" />
+
+    <Button
+        android:id="@+id/Button_AcceptedRequest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"
+        android:background="@color/colorPrimary"
+        android:layout_alignParentEnd="true"
+        android:text="@string/accept_request"
+        android:textColor="#fff"
+        android:padding="10dp"
         />
+
 </RelativeLayout>

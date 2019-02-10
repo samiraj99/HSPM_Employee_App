@@ -1,6 +1,7 @@
 package com.sam.hspm_employee_app;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -31,7 +32,7 @@ import java.util.Locale;
 public class RequestDetails extends AppCompatActivity {
 
     private static final String TAG = "RequestDetails";
-    DatabaseReference databaseReference;
+    DatabaseReference databaseReference,mydatabase;
     FirebaseDatabase firebaseDatabase;
     private static String RequestId,UserId,Address,uid;
     private static String PcType, ProblemType, SpecifiedProblem;
@@ -46,6 +47,8 @@ public class RequestDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_request_details);
+
+        mydatabase = FirebaseDatabase.getInstance().getReference();
 
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setApplicationId(getString(R.string.ApplicationId))
@@ -104,7 +107,7 @@ public class RequestDetails extends AppCompatActivity {
                 } catch (Exception e) {
                     Log.d(TAG, "onDataChange: FirebaseDatabase " + e.getMessage());
                 }
-                Log.d(TAG, "onDataChange: Data "+ UserId + PcType + ProblemType + SpecifiedProblem);
+
             }
 
             @Override
@@ -117,10 +120,15 @@ public class RequestDetails extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 databaseReference.child("Services").child(RequestId).child("Status").setValue("true");
-                databaseReference.child("Services").child(RequestId).child("RequestAcceptedBy").setValue(uid).addOnCompleteListener(new OnCompleteListener<Void>() {
+                databaseReference.child("Users").child(UserId).child("RequestAcceptedBy").setValue(uid).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Log.d(TAG, "onComplete: REQUEST ACCEPTED");
+                        Intent i = new Intent(RequestDetails.this,AcceptedRequest.class);
+                        i.putExtra("RequestId",RequestId);
+                        startActivity(i);
+                        writeToDatabase(RequestId);
+                        finish();
+                        clientApp.delete();
                     }
                 });
             }
@@ -128,6 +136,20 @@ public class RequestDetails extends AppCompatActivity {
 
     }
 
+
+    private void writeToDatabase(String RequestID){
+        mydatabase.child("Users").child(uid).child("Status").setValue("Active");
+        mydatabase.child("Users").child(uid).child("AcceptedRequestId").setValue(RequestID).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()){
+                    Log.d(TAG, "onComplete: Sucesss");
+                }else {
+                    Log.d(TAG, "onComplete: Errpor "+ task.getException());
+                }
+            }
+        });
+    }
     @Override
     protected void onDestroy() {
         clientApp.delete();
