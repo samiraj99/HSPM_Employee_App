@@ -38,8 +38,8 @@ public class MainActivity extends AppCompatActivity {
     FirebaseDatabase firebaseDatabase;
     FirebaseApp clientApp;
     ProgressDialog dialog;
-    ArrayList<String> AddressLits = new ArrayList<>();
-    ArrayList<String> RequestIdLits = new ArrayList<>();
+    ArrayList<String> AddressList = new ArrayList<>();
+    ArrayList<String> RequestIdList = new ArrayList<>();
     private static final String TAG = "MainActivity";
     ListView listView;
     FirebaseAuth firebaseAuth;
@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         clientApp = FirebaseApp.getInstance("ClientDatabase");
         firebaseDatabase = FirebaseDatabase.getInstance(clientApp);
         databaseReference = firebaseDatabase.getReference();
+
         listView = findViewById(R.id.ListView);
         Button BT_SignOut = findViewById(R.id.Button_SignOut);
         Button Bt_AcceptedRequest = findViewById(R.id.Button_AcceptedRequest);
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
         uid = firebaseAuth.getCurrentUser().getUid();
 
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, AddressLits);
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, AddressList);
         listView.setAdapter(adapter);
 
         dialog = new ProgressDialog(this);
@@ -82,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent i = new Intent(MainActivity.this, RequestDetails.class);
-                i.putExtra("RequestId", RequestIdLits.get(position));
+                i.putExtra("RequestId", RequestIdList.get(position));
                 startActivity(i);
                 clientApp.delete();
             }
@@ -124,9 +125,9 @@ public class MainActivity extends AppCompatActivity {
                     status = dataSnapshot.child("Status").getValue().toString();
                 }
                 if (status.equals("false")) {
-                    retriveData(dataSnapshot);
+                    retrieveData(dataSnapshot);
                 }
-                Log.d(TAG, "onChildAdded: Address " + AddressLits);
+                Log.d(TAG, "onChildAdded: Address " + AddressList);
                 adapter.notifyDataSetChanged();
                 dialog.dismiss();
             }
@@ -141,9 +142,9 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         Co_Ordinates co_ordinates = dataSnapshot.child("Address").child("Co_Ordinates").getValue(Co_Ordinates.class);
                         String Address = convertAddress(new LatLng(co_ordinates.Lat, co_ordinates.Lng));
-                        AddressLits.remove(Address);
+                        AddressList.remove(Address);
                         String Id = dataSnapshot.getKey();
-                        RequestIdLits.remove(Id);
+                        RequestIdList.remove(Id);
                         adapter.notifyDataSetChanged();
 
                     } catch (Exception e) {
@@ -158,9 +159,9 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     Co_Ordinates co_ordinates = dataSnapshot.child("Address").child("Co_Ordinates").getValue(Co_Ordinates.class);
                     String Address = convertAddress(new LatLng(co_ordinates.Lat, co_ordinates.Lng));
-                    AddressLits.remove(Address);
+                    AddressList.remove(Address);
                     String Id = dataSnapshot.getKey();
-                    RequestIdLits.remove(Id);
+                    RequestIdList.remove(Id);
                     adapter.notifyDataSetChanged();
 
                 } catch (Exception e) {
@@ -199,16 +200,16 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
     }
 
-    private void retriveData(DataSnapshot dataSnapshot) {
-        RequestIdLits.add(dataSnapshot.getKey());
+    private void retrieveData(DataSnapshot dataSnapshot) {
+        RequestIdList.add(dataSnapshot.getKey());
         for (DataSnapshot ds : dataSnapshot.child("Address").getChildren()) {
             try {
                 Co_Ordinates co_ordinates = ds.getValue(Co_Ordinates.class);
                 assert co_ordinates != null;
                 String Address = convertAddress(new LatLng(co_ordinates.Lat, co_ordinates.Lng));
-                AddressLits.add(Address);
+                AddressList.add(Address);
             } catch (Exception e) {
-                Log.d(TAG, "retriveData: Exception " + e.getMessage());
+                Log.d(TAG, "retrieveData: Exception " + e.getMessage());
             }
         }
     }
@@ -228,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        AddressLits.clear();
+        AddressList.clear();
         adapter.notifyDataSetChanged();
         clientApp.delete();
         super.onStop();
@@ -236,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        AddressLits.clear();
+        AddressList.clear();
         adapter.notifyDataSetChanged();
         clientApp.delete();
         super.onDestroy();
