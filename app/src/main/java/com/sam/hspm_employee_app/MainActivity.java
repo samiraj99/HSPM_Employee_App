@@ -1,8 +1,10 @@
 package com.sam.hspm_employee_app;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,7 +17,12 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -45,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     ArrayAdapter adapter;
     String uid, RequestId;
-
+    private static final int ERROR_DIALOG_REQUEST = 9001;
     boolean IsCureentServiceActive;
 
     @Override
@@ -79,15 +86,31 @@ public class MainActivity extends AppCompatActivity {
         dialog.setMessage("Loading...");
         dialog.show();
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent(MainActivity.this, RequestDetails.class);
-                i.putExtra("RequestId", RequestIdList.get(position));
-                startActivity(i);
-                clientApp.delete();
-            }
-        });
+       if (IsServiceOk()) {
+           listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+               @Override
+               public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                   Intent i = new Intent(MainActivity.this, RequestDetails.class);
+                   i.putExtra("RequestId", RequestIdList.get(position));
+                   startActivity(i);
+                   clientApp.delete();
+               }
+           });
+
+           Bt_AcceptedRequest.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View v) {
+                   if (IsCureentServiceActive) {
+                       Intent i = new Intent(MainActivity.this, AcceptedRequest.class);
+                       i.putExtra("RequestId", RequestId);
+                       startActivity(i);
+                       clientApp.delete();
+                   } else {
+                       Toast.makeText(MainActivity.this, "You Don't have active service..", Toast.LENGTH_SHORT).show();
+                   }
+               }
+           });
+       }
 
         BT_SignOut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,21 +120,22 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+    }
 
-        Bt_AcceptedRequest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (IsCureentServiceActive) {
-                    Intent i = new Intent(MainActivity.this, AcceptedRequest.class);
-                    i.putExtra("RequestId", RequestId);
-                    startActivity(i);
-                    clientApp.delete();
-                } else {
-                    Toast.makeText(MainActivity.this, "You Don't have active service..", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
+    public boolean IsServiceOk(){
+        int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(MainActivity.this);
+        if (available == ConnectionResult.SUCCESS){
+            Log.d(TAG, "IsServiceOk: Google play service is working");
+            return true;
+        }
+        else if (GoogleApiAvailability.getInstance().isUserResolvableError(available)){
+            Log.d(TAG, "IsServiceOk: An error Occured but we can fix this");
+            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(MainActivity.this,available,ERROR_DIALOG_REQUEST);
+            dialog.show();
+        }else {
+            Toast.makeText(this, "You can't make map request", Toast.LENGTH_SHORT).show();
+        }
+        return false;
     }
 
     @Override
@@ -213,7 +237,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
 
     private String convertAddress(LatLng latLng) {
         String address = null;
