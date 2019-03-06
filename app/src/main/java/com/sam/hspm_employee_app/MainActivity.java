@@ -1,13 +1,17 @@
 package com.sam.hspm_employee_app;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -19,9 +23,11 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -39,6 +45,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+
 public class MainActivity extends AppCompatActivity {
 
     DatabaseReference databaseReference, mydatabse;
@@ -52,6 +60,9 @@ public class MainActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     ArrayAdapter adapter;
     String uid, RequestId;
+    List<Address> Location;
+    public FusedLocationProviderClient fusedLocationProviderClient;
+    Geocoder geocoder;
     private static final int ERROR_DIALOG_REQUEST = 9001;
     boolean IsCureentServiceActive;
 
@@ -77,6 +88,11 @@ public class MainActivity extends AppCompatActivity {
         Button Bt_AcceptedRequest = findViewById(R.id.Button_AcceptedRequest);
         firebaseAuth = FirebaseAuth.getInstance();
 
+        geocoder = new Geocoder(this, Locale.getDefault());
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        requestPermission();
+        updateLocation();
+
         uid = firebaseAuth.getCurrentUser().getUid();
 
         adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, AddressList);
@@ -86,31 +102,31 @@ public class MainActivity extends AppCompatActivity {
         dialog.setMessage("Loading...");
         dialog.show();
 
-       if (IsServiceOk()) {
-           listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-               @Override
-               public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                   Intent i = new Intent(MainActivity.this, RequestDetails.class);
-                   i.putExtra("RequestId", RequestIdList.get(position));
-                   startActivity(i);
-                   clientApp.delete();
-               }
-           });
+        if (IsServiceOk()) {
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Intent i = new Intent(MainActivity.this, RequestDetails.class);
+                    i.putExtra("RequestId", RequestIdList.get(position));
+                    startActivity(i);
+                    clientApp.delete();
+                }
+            });
 
-           Bt_AcceptedRequest.setOnClickListener(new View.OnClickListener() {
-               @Override
-               public void onClick(View v) {
-                   if (IsCureentServiceActive) {
-                       Intent i = new Intent(MainActivity.this, AcceptedRequest.class);
-                       i.putExtra("RequestId", RequestId);
-                       startActivity(i);
-                       clientApp.delete();
-                   } else {
-                       Toast.makeText(MainActivity.this, "You Don't have active service..", Toast.LENGTH_SHORT).show();
-                   }
-               }
-           });
-       }
+            Bt_AcceptedRequest.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (IsCureentServiceActive) {
+                        Intent i = new Intent(MainActivity.this, AcceptedRequest.class);
+                        i.putExtra("RequestId", RequestId);
+                        startActivity(i);
+                        clientApp.delete();
+                    } else {
+                        Toast.makeText(MainActivity.this, "You Don't have active service..", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
 
         BT_SignOut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,6 +136,31 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+    }
+
+    private void updateLocation() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1 );
+        }
+        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(MainActivity.this, new OnSuccessListener<android.location.Location>() {
+            @Override
+            public void onSuccess(android.location.Location location) {
+                if (location != null){
+                    Co_Ordinates co_ordinates = new Co_Ordinates(location.getLatitude(),location.getLongitude());
+                    mydatabse.child("Users").child(uid).child("Location").setValue(co_ordinates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            Log.d(TAG, "onComplete: Location Updated");
+                        }
+                    });
+                }
+
+            }
+        });
+    }
+
+    private void requestPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION}, 1);
     }
 
     public boolean IsServiceOk(){

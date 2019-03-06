@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AcceptedRequest"
     android:background="#C2D8E4"
-    >
+    tools:context=".AcceptedRequest">
 
     <android.support.v7.widget.CardView
+        android:id="@+id/CardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -34,19 +35,18 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/Text_UserInfo"
                 android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
                 android:text="NAME :-"
                 android:textColor="@color/colorPrimary"
-                android:textSize="20sp"
-                android:layout_marginTop="10dp"
-                />
+                android:textSize="20sp" />
 
             <TextView
-                android:layout_marginTop="10dp"
                 android:id="@+id/TextView_Name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/Text_UserInfo"
                 android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
                 android:layout_toEndOf="@+id/Text_Name"
                 android:textColor="#000"
                 android:textSize="20sp" />
@@ -75,15 +75,42 @@
 
         </RelativeLayout>
     </android.support.v7.widget.CardView>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/Button_Complete_Request"
+        android:layout_below="@+id/CardView">
+
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            tools:context=".MapsActivity" />
+
+        <Button
+            android:id="@+id/Button_Employee_Location"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="65dp"
+            android:layout_marginEnd="25dp"
+            android:background="@drawable/ic_location_searching_black_24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </android.support.constraint.ConstraintLayout>
+
     <Button
         android:id="@+id/Button_Complete_Request"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:background="#fff"
         android:layout_margin="10dp"
-        android:text="Complete Request"
+        android:background="#fff"
         android:padding="10dp"
-        />
+        android:text="Complete Request" />
 </RelativeLayout>
