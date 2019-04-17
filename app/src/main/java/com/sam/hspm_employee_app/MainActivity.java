@@ -100,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
 
         dialog = new ProgressDialog(this);
         dialog.setMessage("Loading...");
+        dialog.setCancelable(false);
         dialog.show();
 
         if (IsServiceOk()) {
@@ -117,10 +118,12 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     if (IsCureentServiceActive) {
-                        Intent i = new Intent(MainActivity.this, AcceptedRequest.class);
-                        i.putExtra("RequestId", RequestId);
-                        startActivity(i);
-                        clientApp.delete();
+                        if (!RequestId.isEmpty()){
+                            Intent i = new Intent(MainActivity.this, AcceptedRequest.class);
+                            i.putExtra("RequestId", RequestId);
+                            startActivity(i);
+                            clientApp.delete();
+                        }
                     } else {
                         Toast.makeText(MainActivity.this, "You Don't have active service..", Toast.LENGTH_SHORT).show();
                     }
@@ -266,6 +269,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void retrieveData(DataSnapshot dataSnapshot) {
+       if(!RequestIdList.contains(dataSnapshot.getKey())){
         RequestIdList.add(dataSnapshot.getKey());
         for (DataSnapshot ds : dataSnapshot.child("Address").getChildren()) {
             try {
@@ -277,6 +281,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "retrieveData: Exception " + e.getMessage());
             }
         }
+    }
     }
 
     private String convertAddress(LatLng latLng) {

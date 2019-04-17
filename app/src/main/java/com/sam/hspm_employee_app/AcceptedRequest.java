@@ -45,6 +45,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -70,8 +72,8 @@ public class AcceptedRequest extends AppCompatActivity {
     private GoogleMap map;
     private static final float DEFAULT_ZOOM = 15f;
     private String Address;
-    private LocationManager locationManager;
-    private LocationListener locationListener;
+    LocationManager locationManager;
+    LocationListener locationListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +84,7 @@ public class AcceptedRequest extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
         uid = firebaseUser.getUid();
-
+        final DateandTime dateandTime;
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setApplicationId(getString(R.string.ApplicationId))
                 .setApiKey(getString(R.string.ApiKey))
@@ -110,6 +112,11 @@ public class AcceptedRequest extends AppCompatActivity {
 
         RetrieveData(RequestId);
 
+        Date cTime = Calendar.getInstance().getTime();
+        String date= cTime.getDate()+"/"+(cTime.getMonth()+1)+"/"+(cTime.getYear()-100);
+        String time = cTime.getHours()+":"+cTime.getMinutes();
+        dateandTime = new DateandTime(date,time);
+
         BT_Empoloyee_Location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -123,7 +130,7 @@ public class AcceptedRequest extends AppCompatActivity {
                 clientDatabase.child("Users").child(UserId).child("Current_Service_Id").setValue(0);
                 clientDatabase.child("Users").child(UserId).child("RequestAcceptedBy").setValue(0);
                 clientDatabase.child("Services").child(RequestId).child("RequestAcceptedBy").setValue(uid);
-
+                clientDatabase.child("Services").child(RequestId).child("DateTime").setValue(dateandTime);
 
                 clientDatabase.child("Services").child(RequestId).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -160,6 +167,9 @@ public class AcceptedRequest extends AppCompatActivity {
             }
 
         });
+
+        //getTing Current time
+
 
         //maps
         getLocationPermission();
@@ -377,5 +387,15 @@ public class AcceptedRequest extends AppCompatActivity {
     protected void onDestroy() {
         clientApp.delete();
         super.onDestroy();
+    }
+
+    public static class DateandTime {
+        String Date;
+        String Time;
+
+        public DateandTime(String date, String time) {
+            Date = date;
+            Time = time;
+        }
     }
 }
