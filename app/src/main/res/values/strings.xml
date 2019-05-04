@@ -3,4 +3,71 @@
     <string name="notspecified">Not Specified</string>
     <string name="accept_request">Accepted Request</string>
     <string name="signout">SignOut</string>
+    <string name="what_problem_solved">What Problem Solved?</string>
+    <string name="amount">Amount</string>
+    <string name="complete_request">Complete Request</string>
+    <string name="generate_receipt">Generate Receipt</string>
+    <string name="solved_issued">Solved Issued</string>
+    <string name="total">Total :</string>
+    <string name="total_amount">Total_Amount</string>
+    <string name="send">Send</string>
+    <string name="add">ADD</string>
+    <string name="textview">TextView</string>
+    <string-array name="ID_array">
+        <item>Adhar Card</item>
+        <item>Pan Card</item>
+        <item>Driving Licence</item>
+    </string-array>
+    <string-array name="Document_array">
+        <item>Workshop</item>
+        <item>Office</item>
+        <item>Shop</item>
+    </string-array>
+    <string name="item_1">Services</string>
+    <string name="item_2">Ongoing</string>
+    <string name="item_3">History</string>
+    <string name="item_4">Menu</string>
+
+    <string name="state_prompt">Select State</string>
+    <string name="city_prompt">Select City</string>
+
+    <string-array name="state_list">
+        <item>Select State</item>
+        <item>Andaman and Nicobar Islands</item>
+        <item>Andhra Pradesh</item>
+        <item>Arunachal Pradesh</item>
+        <item>Assam</item>
+        <item>Bihar</item>
+        <item>Chandigarh</item>
+        <item>Chhattisgarh</item>
+        <item>Dadra and Nagar Haveli</item>
+        <item>Daman and Diu</item>
+        <item>Delhi</item>
+        <item>Goa</item>
+        <item>Gujarat</item>
+        <item>Haryana</item>
+        <item>Himachal Pradesh</item>
+        <item>Jammu and Kashmir</item>
+        <item>Jharkhand</item>
+        <item>Karnataka</item>
+        <item>Kerala</item>
+        <item>Lakshadweep</item>
+        <item>Madhya Pradesh</item>
+        <item>Maharashtra</item>
+        <item>Manipur</item>
+        <item>Meghalaya</item>
+        <item>Mizoram</item>
+        <item>Nagaland</item>
+        <item>Orissa</item>
+        <item>Pondicherry</item>
+        <item>Punjab</item>
+        <item>Rajasthan</item>
+        <item>Sikkim</item>
+        <item>Tamil Nadu</item>
+        <item>Tripura</item>
+        <item>Uttaranchal</item>
+        <item>Uttar Pradesh</item>
+        <item>West Bengal</item>
+    </string-array>
+
 </resources>

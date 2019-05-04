@@ -123,7 +123,7 @@ public class RequestDetails extends AppCompatActivity {
                 databaseReference.child("Users").child(UserId).child("RequestAcceptedBy").setValue(uid).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Intent i = new Intent(RequestDetails.this,AcceptedRequest.class);
+                        Intent i = new Intent(RequestDetails.this,MainActivity.class);
                         i.putExtra("RequestId",RequestId);
                         startActivity(i);
                         writeToDatabase(RequestId);

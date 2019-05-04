@@ -1,9 +1,8 @@
-package com.sam.hspm_employee_app;
+package com.sam.hspm_employee_app.Fragments;
 
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,16 +15,16 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -43,17 +42,19 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.sam.hspm_employee_app.R;
+import com.sam.hspm_employee_app.Receipt;
 
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class AcceptedRequest extends AppCompatActivity {
+import static android.content.Context.LOCATION_SERVICE;
+
+public class OnGoingServiceFragment extends Fragment {
 
     String RequestId, UserId;
-    private static final String TAG = "AcceptedRequest";
+    private static final String TAG = "OnGoingServiceFragment";
     FirebaseApp clientApp;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference clientDatabase, mydatabase;
@@ -64,7 +65,7 @@ public class AcceptedRequest extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
     Button BtCompleteRequest;
-    Button BT_Empoloyee_Location;
+    Button BT_Employee_Location;
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1234;
@@ -74,101 +75,78 @@ public class AcceptedRequest extends AppCompatActivity {
     private String Address;
     LocationManager locationManager;
     LocationListener locationListener;
+    View v1;
 
+    public static OnGoingServiceFragment newInstance() {
+        return new OnGoingServiceFragment();
+    }
+
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_accepted_request);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        v1 = inflater.inflate(R.layout.fragment_on_going_service, container, false);
 
         mydatabase = FirebaseDatabase.getInstance().getReference();
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
         uid = firebaseUser.getUid();
-        final DateandTime dateandTime;
+
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setApplicationId(getString(R.string.ApplicationId))
                 .setApiKey(getString(R.string.ApiKey))
                 .setDatabaseUrl(getString(R.string.DatabaseUrl))
                 .build();
-        FirebaseApp.initializeApp(this, options, "ClientDatabase");
+        FirebaseApp.initializeApp(getContext(), options, "ClientDatabase");
         clientApp = FirebaseApp.getInstance("ClientDatabase");
         firebaseDatabase = FirebaseDatabase.getInstance(clientApp);
         clientDatabase = firebaseDatabase.getReference();
 
-        TV_Name = findViewById(R.id.TextView_Name);
-        TV_PhoneNo = findViewById(R.id.TextView_PhoneNo);
-        BtCompleteRequest = findViewById(R.id.Button_Complete_Request);
-        BT_Empoloyee_Location = findViewById(R.id.Button_Employee_Location);
+        TV_Name = v1.findViewById(R.id.TextView_Name);
+        TV_PhoneNo = v1.findViewById(R.id.TextView_PhoneNo);
+        BtCompleteRequest = v1.findViewById(R.id.Button_Complete_Request);
+        BT_Employee_Location = v1.findViewById(R.id.Button_Employee_Location);
 
-        progressDialog = new ProgressDialog(this);
+        progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Loading..!");
         progressDialog.show();
 
-        try {
-            RequestId = getIntent().getExtras().getString("RequestId").trim();
-        } catch (Exception e) {
-            Log.d(TAG, "onCreate: Exception " + e.getMessage());
-        }
+        mydatabase.child("Users").child(uid).child("AcceptedRequestId").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    RequestId = dataSnapshot.getValue().toString();
+                    RetrieveData(RequestId);
+                }
 
-        RetrieveData(RequestId);
+            }
 
-        Date cTime = Calendar.getInstance().getTime();
-        String date= cTime.getDate()+"/"+(cTime.getMonth()+1)+"/"+(cTime.getYear()-100);
-        String time = cTime.getHours()+":"+cTime.getMinutes();
-        dateandTime = new DateandTime(date,time);
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-        BT_Empoloyee_Location.setOnClickListener(new View.OnClickListener() {
+            }
+        });
+
+
+        BT_Employee_Location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 moveCamera(new LatLng(Lat, Lng), DEFAULT_ZOOM, Address);
             }
         });
 
+        //BT Complete is generate receipt button.
+
         BtCompleteRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clientDatabase.child("Users").child(UserId).child("Current_Service_Id").setValue(0);
-                clientDatabase.child("Users").child(UserId).child("RequestAcceptedBy").setValue(0);
-                clientDatabase.child("Services").child(RequestId).child("RequestAcceptedBy").setValue(uid);
-                clientDatabase.child("Services").child(RequestId).child("DateTime").setValue(dateandTime);
-
-                clientDatabase.child("Services").child(RequestId).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        clientDatabase.child("Users").child(UserId).child("History").child(RequestId).setValue(dataSnapshot.getValue(), new DatabaseReference.CompletionListener() {
-                            @Override
-                            public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
-                                if (databaseError != null) {
-                                    Log.e(TAG, "onComplete: Copy Failed");
-                                } else {
-                                    clientDatabase.child("Users").child(UserId).child("History").
-                                            child(RequestId).child("Uid").removeValue();
-                                    clientDatabase.child("Users").child(UserId).child("History")
-                                            .child(RequestId).child("Status").removeValue();
-
-                                    clientDatabase.child("Services").child(RequestId).removeValue();
-                                    //mydatabse is Employees database.
-                                    mydatabase.child("Users").child(uid).child("AcceptedRequestId").setValue(0);
-                                    Intent i = new Intent(AcceptedRequest.this, MainActivity.class);
-                                    startActivity(i);
-                                    clientApp.delete();
-                                }
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
-
+                Intent i = new Intent(getActivity(), Receipt.class);
+                i.putExtra("RequestId", RequestId);
+                i.putExtra("UserId", UserId);
+                startActivity(i);
+                clientApp.delete();
             }
 
         });
-
-        //getTing Current time
 
 
         //maps
@@ -177,7 +155,7 @@ public class AcceptedRequest extends AppCompatActivity {
 
 
         //update constant location to database
-        locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+        locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
@@ -201,8 +179,8 @@ public class AcceptedRequest extends AppCompatActivity {
             }
         };
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) !=
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) !=
                 PackageManager.PERMISSION_GRANTED) {
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -210,13 +188,16 @@ public class AcceptedRequest extends AppCompatActivity {
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-            return;
+            return v1;
         }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,10000, 5f, locationListener);
+
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 5f, locationListener);
+
+        return v1;
     }
 
     private void updateLocation(Location location) {
-        Co_Ordinates co_ordinates = new Co_Ordinates(location.getLatitude(),location.getLongitude());
+        Co_Ordinates co_ordinates = new Co_Ordinates(location.getLatitude(), location.getLongitude());
         mydatabase.child("Users").child(uid).child("Location").setValue(co_ordinates).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -226,16 +207,16 @@ public class AcceptedRequest extends AppCompatActivity {
     }
 
     private void getLocationPermission() {
-        String[] permissions = {android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION};
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(), FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            if (ContextCompat.checkSelfPermission(this.getApplicationContext(), COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+        if (ContextCompat.checkSelfPermission(getContext(), FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(getContext(), COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 mLocationPermissionGranted = true;
-                initMap();
+
             } else {
-                ActivityCompat.requestPermissions(this, permissions, LOCATION_PERMISSION_REQUEST_CODE);
+                ActivityCompat.requestPermissions(getActivity(), permissions, LOCATION_PERMISSION_REQUEST_CODE);
             }
         } else {
-            ActivityCompat.requestPermissions(this, permissions, LOCATION_PERMISSION_REQUEST_CODE);
+            ActivityCompat.requestPermissions(getActivity(), permissions, LOCATION_PERMISSION_REQUEST_CODE);
         }
     }
 
@@ -254,21 +235,21 @@ public class AcceptedRequest extends AppCompatActivity {
     }
 
     private void initMap() {
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
                 map = googleMap;
-                if (mLocationPermissionGranted) {
+                if (mLocationPermissionGranted && !Address.isEmpty()) {
                     moveCamera(new LatLng(Lat, Lng), 15f, Address);
-                    if (ActivityCompat.checkSelfPermission(AcceptedRequest.this, Manifest.permission.ACCESS_FINE_LOCATION) !=
+                    if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) !=
                             PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission
-                            (AcceptedRequest.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                            (getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                         return;
                     }
                     map.setMyLocationEnabled(true);
                 }
-                Toast.makeText(AcceptedRequest.this, "Map is Ready", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Map is Ready", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -304,7 +285,7 @@ public class AcceptedRequest extends AppCompatActivity {
                     Lng = Double.parseDouble(dataSnapshot.child("Address").child("Co_Ordinates").child("Lng").getValue().toString());
                     Log.d(TAG, "onDataChange: Lat,Lng" + Lat + Lng);
                     displayData();
-                    convertLocation(new LatLng(Lat,Lng));
+                    convertLocation(new LatLng(Lat, Lng));
                 }
             }
 
@@ -316,10 +297,11 @@ public class AcceptedRequest extends AppCompatActivity {
     }
 
     private void convertLocation(LatLng latLng) {
-        Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
         try {
             List<Address> St_Location = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
             Address = St_Location.get(0).getAddressLine(0);
+            initMap();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -344,8 +326,9 @@ public class AcceptedRequest extends AppCompatActivity {
 
         }
     }
+
     private void checkLocationState() {
-        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        final LocationManager manager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
 
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             buildAlertMessageNoGps();
@@ -353,7 +336,7 @@ public class AcceptedRequest extends AppCompatActivity {
     }
 
     private void buildAlertMessageNoGps() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setMessage("Your GPS seems to be disabled, do you want to enable it?")
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -384,18 +367,10 @@ public class AcceptedRequest extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         clientApp.delete();
         super.onDestroy();
     }
 
-    public static class DateandTime {
-        String Date;
-        String Time;
 
-        public DateandTime(String date, String time) {
-            Date = date;
-            Time = time;
-        }
-    }
 }

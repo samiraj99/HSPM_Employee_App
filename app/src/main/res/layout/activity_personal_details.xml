@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SignUpForm.PersonalDetails">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:elevation="5dp">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#81D4FA"
+            android:fadingEdgeLength="0dp"
+            android:scrollbars="none">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp">
+
+                <TextView
+                    android:id="@+id/full_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Full Name: "
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/fname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/full_name"
+                    android:hint="Enter Full Name"
+                    android:textColor="@color/white" />
+
+                <EditText
+                    android:id="@+id/dob"
+                    android:layout_width="90dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/fname"
+                    android:layout_marginTop="10dp"
+                    android:hint="Birth Date "
+                    android:inputType="date"
+                    android:textColor="@color/white" />
+
+                <Button
+                    android:id="@+id/date_of_birth"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_below="@id/fname"
+                    android:layout_marginTop="10dp"
+                    android:layout_toRightOf="@id/dob"
+                    android:background="@drawable/calender" />
+
+                <TextView
+                    android:id="@+id/gender"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/fname"
+                    android:layout_marginTop="5dp"
+                    android:layout_toRightOf="@id/date_of_birth"
+                    android:text="                Gender: "
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold" />
+
+                <RadioGroup
+                    android:id="@+id/gender_radio_group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/fname"
+                    android:layout_marginTop="10dp"
+                    android:layout_toRightOf="@+id/date_of_birth"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <RadioButton
+                        android:id="@+id/male_radio_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true"
+                        android:text="Male" />
+
+                    <RadioButton
+                        android:id="@+id/female_radio_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Female" />
+                </RadioGroup>
+
+                <TextView
+                    android:id="@+id/per_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/dob"
+                    android:layout_marginTop="15dp"
+                    android:text="Permanent Address: "
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/permanent_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/per_address"
+                    android:hint="Enter Street/Lane, City"
+                    android:inputType="textMultiLine"
+                    android:textColor="@color/white" />
+
+                <TextView
+                    android:id="@+id/country"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/permanent_address"
+                    android:layout_marginTop="5dp"
+                    android:text="Country: "
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/country_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/country"
+                    android:layout_marginTop="5dp"
+                    android:text="India"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/state"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/permanent_address"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_toRightOf="@id/country_name"
+                    android:text="State: "
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/per_state"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/country"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_toRightOf="@id/country_name"
+                    android:entries="@array/state_list"
+                    android:prompt="@string/state_prompt" />
+
+
+                <TextView
+                    android:id="@+id/city"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/permanent_address"
+                    android:layout_marginTop="5dp"
+                    android:layout_toRightOf="@id/per_state"
+                    android:text="City: "
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/per_city"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/country"
+                    android:layout_marginTop="5dp"
+                    android:layout_toRightOf="@id/per_state"
+                    android:prompt="@string/city_prompt" />
+
+
+                <TextView
+                    android:id="@+id/pincode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/country_name"
+                    android:layout_marginTop="5dp"
+                    android:text="Pincode: "
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/pin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/pincode"
+                    android:hint="Enter Pincode"
+                    android:inputType="number"
+                    android:textColor="@color/white" />
+<!--
+                                <CheckBox
+                                    android:id="@+id/checkbox"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@id/pin"
+                                    android:layout_marginTop="15dp"
+                                    android:text="If Correspondence Address same as above"
+                                    android:textColor="@color/white"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/cor_address"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@id/checkbox"
+                                    android:layout_marginTop="10dp"
+                                    android:text="Correspondence Address: "
+                                    android:textColor="@color/colorPrimaryDark"
+                                    android:textStyle="bold" />
+
+                                <EditText
+                                    android:id="@+id/correspond_address"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@id/cor_address"
+                                    android:hint="Enter Street/Lane, City, Pincode"
+                                    android:inputType="textMultiLine"
+                                    android:textColor="@color/white" />
+
+                                <TextView
+                                    android:id="@+id/country1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@id/correspond_address"
+                                    android:layout_marginTop="5dp"
+                                    android:text="Country: "
+                                    android:textColor="@color/colorPrimaryDark"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/country_name1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@id/country1"
+                                    android:layout_marginTop="5dp"
+                                    android:text="India"
+                                    android:textColor="@color/white"
+                                    android:textSize="20sp" />
+
+                                <TextView
+                                    android:id="@+id/state1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@id/correspond_address"
+                                    android:layout_marginLeft="20dp"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_toRightOf="@id/country_name1"
+                                    android:text="State: "
+                                    android:textColor="@color/colorPrimaryDark"
+                                    android:textStyle="bold" />
+
+                                <Spinner
+                                    android:id="@+id/per_state1"
+                                    android:layout_width="120dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@id/country1"
+                                    android:layout_marginLeft="20dp"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_toRightOf="@id/country_name1"
+                                    android:entries="@array/state_list"
+                                    android:prompt="@string/state_prompt"
+                                    />
+
+
+                                <TextView
+                                    android:id="@+id/city1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@id/correspond_address"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_toRightOf="@id/per_state1"
+                                    android:text="City: "
+                                    android:textColor="@color/colorPrimaryDark"
+                                    android:textStyle="bold" />
+
+                                <Spinner
+                                    android:id="@+id/per_city1"
+                                    android:layout_width="120dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@id/country1"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_toRightOf="@id/per_state1"
+                                    android:prompt="@string/city_prompt" />
+
+                                <TextView
+                                    android:id="@+id/pincode1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@id/country_name1"
+                                    android:layout_marginTop="5dp"
+                                    android:text="Pincode: "
+                                    android:textColor="@color/colorPrimaryDark"
+                                    android:textStyle="bold" />
+
+                                <EditText
+                                    android:id="@+id/pin1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@id/pincode1"
+                                    android:hint="Enter Pincode"
+                                    android:inputType="number"
+                                    android:textColor="@color/white" />
+
+                                <CheckBox
+                                    android:id="@+id/correctdetails"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/pin1"
+                                    android:layout_marginTop="10dp"
+                                    android:text="I agree that details provided are correct"
+                                    android:textColor="@color/white"
+                                    android:textStyle="bold" />
+
+                                <CheckBox
+                                    android:id="@+id/tc"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_below="@+id/correctdetails"
+                                    android:layout_marginTop="10dp"
+                                    android:text="I agree to the Terms and Conditions"
+                                    android:textColor="@color/white"
+                                    android:textStyle="bold" />
+                -->
+                <Button
+                    android:id="@+id/BT_Profile_Next"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/pin"
+                    android:layout_marginTop="20dp"
+                    android:background="@color/colorPrimaryDark"
+                    android:text="Next"
+                    android:textColor="@color/white" />
+
+            </RelativeLayout>
+
+        </ScrollView>
+
+    </android.support.v7.widget.CardView>
+
+</android.support.constraint.ConstraintLayout>
