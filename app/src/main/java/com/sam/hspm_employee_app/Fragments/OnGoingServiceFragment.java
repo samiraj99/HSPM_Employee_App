@@ -42,6 +42,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.sam.hspm_employee_app.MainActivity;
 import com.sam.hspm_employee_app.R;
 import com.sam.hspm_employee_app.Receipt;
 
@@ -91,15 +92,18 @@ public class OnGoingServiceFragment extends Fragment {
         firebaseUser = firebaseAuth.getCurrentUser();
         uid = firebaseUser.getUid();
 
-        FirebaseOptions options = new FirebaseOptions.Builder()
-                .setApplicationId(getString(R.string.ApplicationId))
-                .setApiKey(getString(R.string.ApiKey))
-                .setDatabaseUrl(getString(R.string.DatabaseUrl))
-                .build();
-        FirebaseApp.initializeApp(getContext(), options, "ClientDatabase");
-        clientApp = FirebaseApp.getInstance("ClientDatabase");
-        firebaseDatabase = FirebaseDatabase.getInstance(clientApp);
-        clientDatabase = firebaseDatabase.getReference();
+        if (clientApp == null) {
+            FirebaseOptions options = new FirebaseOptions.Builder()
+                    .setApplicationId(getString(R.string.ApplicationId))
+                    .setApiKey(getString(R.string.ApiKey))
+                    .setDatabaseUrl(getString(R.string.DatabaseUrl))
+                    .build();
+            FirebaseApp.initializeApp(getContext(), options, "ClientDatabase");
+            clientApp = FirebaseApp.getInstance("ClientDatabase");
+            firebaseDatabase = FirebaseDatabase.getInstance(clientApp);
+            clientDatabase = firebaseDatabase.getReference();
+        }
+
 
         TV_Name = v1.findViewById(R.id.TextView_Name);
         TV_PhoneNo = v1.findViewById(R.id.TextView_PhoneNo);
@@ -142,8 +146,10 @@ public class OnGoingServiceFragment extends Fragment {
                 Intent i = new Intent(getActivity(), Receipt.class);
                 i.putExtra("RequestId", RequestId);
                 i.putExtra("UserId", UserId);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK| Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(i);
                 clientApp.delete();
+                getActivity().finish();
             }
 
         });
@@ -297,13 +303,15 @@ public class OnGoingServiceFragment extends Fragment {
     }
 
     private void convertLocation(LatLng latLng) {
-        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
-        try {
-            List<Address> St_Location = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
-            Address = St_Location.get(0).getAddressLine(0);
-            initMap();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (getActivity() != null) {
+            Geocoder geocoder = new Geocoder(getActivity(), Locale.getDefault());
+            try {
+                List<Address> St_Location = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+                Address = St_Location.get(0).getAddressLine(0);
+                initMap();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

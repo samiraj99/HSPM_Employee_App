@@ -48,6 +48,8 @@ public class Receipt extends AppCompatActivity {
     FirebaseApp clientApp;
     String RequestId, UserId;
     ProgressDialog progressDialog;
+    public DateandTime dateandTime;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +60,6 @@ public class Receipt extends AppCompatActivity {
         SolvedProblem = new ArrayList<>();
         Amount = new ArrayList<>();
         progressDialog = new ProgressDialog(this);
-        final DateandTime dateandTime;
 
         listView = findViewById(R.id.listview1);
         textView_Total = findViewById(R.id.tvTotal);
@@ -211,12 +212,19 @@ public class Receipt extends AppCompatActivity {
     }
 
     public static class DateandTime {
-        String Date;
-        String Time;
+        public String Date;
+        public String Time;
 
         public DateandTime(String date, String time) {
             Date = date;
             Time = time;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent i = new Intent(Receipt.this,MainActivity.class);
+        startActivity(i);
+        super.onBackPressed();
     }
 }

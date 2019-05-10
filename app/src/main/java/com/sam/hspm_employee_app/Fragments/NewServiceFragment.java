@@ -29,6 +29,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
@@ -83,7 +84,6 @@ public class NewServiceFragment extends Fragment {
         v1 = inflater.inflate(R.layout.fragment_new_service, container, false);
 
         mydatabse = FirebaseDatabase.getInstance().getReference();
-
 
         FirebaseOptions options = new FirebaseOptions.Builder()
                 .setApplicationId(getString(R.string.ApplicationId))
@@ -146,6 +146,11 @@ public class NewServiceFragment extends Fragment {
                     });
                 }
 
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e(TAG, "onFailure: "+e.getMessage() );
             }
         });
     }

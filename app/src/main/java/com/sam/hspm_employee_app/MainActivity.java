@@ -28,7 +28,9 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -62,6 +64,10 @@ public class MainActivity extends AppCompatActivity {
         mydatabase = FirebaseDatabase.getInstance().getReference();
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
+
+        String u = firebaseUser.getPhoneNumber();
+        System.out.println(u);
+
         uid = firebaseUser.getUid();
 
         dialog = new ProgressDialog(MainActivity.this);
@@ -105,7 +111,10 @@ public class MainActivity extends AppCompatActivity {
                             if (dataSnapshot.exists()) {
                                 AcceptedRequestId = dataSnapshot.getValue().toString();
                                 selectFragment();
-                                dialog.dismiss();
+                                if (dialog != null) {
+                                    dialog.dismiss();
+                                    dialog = null;
+                                }
                             }
                         }
 
@@ -169,11 +178,11 @@ public class MainActivity extends AppCompatActivity {
                                 selectedFragment = MenuFragment.newInstance();
                                 break;
                         }
-                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                     //   FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                         if (selectedFragment != null) {
-                            transaction.replace(R.id.frame_layout, selectedFragment);
+                            getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, selectedFragment).commitAllowingStateLoss();
                         }
-                        transaction.commit();
+                       // transaction.commit();
                         return true;
                     }
                 });
@@ -183,11 +192,11 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if (IsVerified.equals("true")) {
             if (AcceptedRequestId.equals("0")) {
-                transaction.replace(R.id.frame_layout, NewServiceFragment.newInstance());
-                transaction.commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, NewServiceFragment.newInstance()).commitAllowingStateLoss();
+                //transaction.commit();
             } else {
-                transaction.replace(R.id.frame_layout, ErrorFragment.newInstance());
-                transaction.commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, ErrorFragment.newInstance()).commitAllowingStateLoss();
+                //transaction.commit();
             }
         }else {
             transaction.replace(R.id.frame_layout, NotVerified.newInstance());
@@ -200,6 +209,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onDestroy() {
+        Toast.makeText(this, "Main activity destroy", Toast.LENGTH_SHORT).show();
+        Log.d("MainActivity", "onDestroy: Main activity destroy");
         super.onDestroy();
         if (dialog != null) {
             dialog.dismiss();

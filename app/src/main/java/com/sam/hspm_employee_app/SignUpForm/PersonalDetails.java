@@ -55,6 +55,7 @@ public class PersonalDetails extends Fragment implements DatePickerDialog.OnDate
     Spinner stateSpinner, s2, S3, C4;
     String selectedItem;
     FirebaseAuth mAuth;
+    FirebaseUser mUser;
     DatabaseReference UserRefs;
     int id;
     String uid, ST_fullName, ST_BirthDate, ST_Address, ST_State, ST_City, ST_PinCode, ST_gender;
@@ -84,6 +85,7 @@ public class PersonalDetails extends Fragment implements DatePickerDialog.OnDate
         buttonNext = v1.findViewById(R.id.BT_Profile_Next);
 
         mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
         UserRefs = FirebaseDatabase.getInstance().getReference().child(mAuth.getUid());
 
         calendar = Calendar.getInstance();
@@ -140,8 +142,8 @@ public class PersonalDetails extends Fragment implements DatePickerDialog.OnDate
 
         stateSpinner = v1.findViewById(R.id.per_state);
         s2 = v1.findViewById(R.id.per_city);
-       // S3 = v1.findViewById(R.id.per_state1);
-       // C4 = v1.findViewById(R.id.per_city1);
+        // S3 = v1.findViewById(R.id.per_state1);
+        // C4 = v1.findViewById(R.id.per_city1);
 
         Button dialog_bt_date = v1.findViewById(R.id.date_of_birth);
 
@@ -279,7 +281,8 @@ public class PersonalDetails extends Fragment implements DatePickerDialog.OnDate
                     pincode.setError("Fields can't be empty");
                     dialog.dismiss();
                 } else {
-                    final Detail detail = new Detail(ST_fullName, ST_BirthDate, ST_gender);
+                    String phno = mUser.getPhoneNumber();
+                    final Detail detail = new Detail(ST_fullName, ST_BirthDate, ST_gender, phno);
                     mydatabase.child("Profile").child("ProfileDetails").setValue(detail).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
@@ -288,8 +291,8 @@ public class PersonalDetails extends Fragment implements DatePickerDialog.OnDate
                                 mydatabase.child("Profile").child("ProfileDetails").child("PermanentAddress").setValue(addressDetails).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()){
-                                            ((FormDetails)getActivity()).ChangeActivity();
+                                        if (task.isSuccessful()) {
+                                            ((FormDetails) getActivity()).ChangeActivity();
                                             dialog.dismiss();
                                         }
                                     }
@@ -326,7 +329,7 @@ public class PersonalDetails extends Fragment implements DatePickerDialog.OnDate
     }
 
     public static class AddressDetails {
-       public String Address, State, City, Pincode;
+        public String Address, State, City, Pincode;
 
         public AddressDetails(String address, String state, String city, String pincode) {
             Address = address;
