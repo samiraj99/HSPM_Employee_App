@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,6 +58,7 @@ public class NewServiceFragment extends Fragment {
     }
 
     View v1;
+    SwipeRefreshLayout pulltorefresh;
     DatabaseReference databaseReference, mydatabse;
     FirebaseDatabase firebaseDatabase;
     FirebaseApp clientApp;
@@ -93,6 +95,7 @@ public class NewServiceFragment extends Fragment {
         firebaseDatabase = FirebaseDatabase.getInstance(clientApp);
         databaseReference = firebaseDatabase.getReference();
 
+        pulltorefresh = v1.findViewById(R.id.pulltorefresh);
         listView = v1.findViewById(R.id.ListView);
         firebaseAuth = FirebaseAuth.getInstance();
 
@@ -123,21 +126,18 @@ public class NewServiceFragment extends Fragment {
             });
 
         }
-
-
-
-            return v1;
+        return v1;
     }
 
     private void updateLocation() {
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1 );
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }
         fusedLocationProviderClient.getLastLocation().addOnSuccessListener(getActivity(), new OnSuccessListener<android.location.Location>() {
             @Override
             public void onSuccess(android.location.Location location) {
-                if (location != null){
-                    Co_Ordinates co_ordinates = new Co_Ordinates(location.getLatitude(),location.getLongitude());
+                if (location != null) {
+                    Co_Ordinates co_ordinates = new Co_Ordinates(location.getLatitude(), location.getLongitude());
                     mydatabse.child("Users").child(uid).child("Location").setValue(co_ordinates).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
@@ -155,22 +155,20 @@ public class NewServiceFragment extends Fragment {
         ActivityCompat.requestPermissions(getActivity(), new String[]{ACCESS_FINE_LOCATION}, 1);
     }
 
-    public boolean IsServiceOk(){
+    public boolean IsServiceOk() {
         int available = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getActivity());
-        if (available == ConnectionResult.SUCCESS){
+        if (available == ConnectionResult.SUCCESS) {
             Log.d(TAG, "IsServiceOk: Google play service is working");
             return true;
-        }
-        else if (GoogleApiAvailability.getInstance().isUserResolvableError(available)){
+        } else if (GoogleApiAvailability.getInstance().isUserResolvableError(available)) {
             Log.d(TAG, "IsServiceOk: An error Occured but we can fix this");
-            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(getActivity(),available,ERROR_DIALOG_REQUEST);
+            Dialog dialog = GoogleApiAvailability.getInstance().getErrorDialog(getActivity(), available, ERROR_DIALOG_REQUEST);
             dialog.show();
-        }else {
+        } else {
             Toast.makeText(getContext(), "You can't make map request", Toast.LENGTH_SHORT).show();
         }
         return false;
     }
-
 
 
     @Override
@@ -260,7 +258,7 @@ public class NewServiceFragment extends Fragment {
     }
 
     private void retrieveData(DataSnapshot dataSnapshot) {
-        if(!RequestIdList.contains(dataSnapshot.getKey())){
+        if (!RequestIdList.contains(dataSnapshot.getKey())) {
             RequestIdList.add(dataSnapshot.getKey());
             for (DataSnapshot ds : dataSnapshot.child("Address").getChildren()) {
                 try {
@@ -308,6 +306,5 @@ public class NewServiceFragment extends Fragment {
         }
 
     }
-
 
 }

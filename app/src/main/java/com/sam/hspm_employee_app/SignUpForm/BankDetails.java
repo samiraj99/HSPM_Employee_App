@@ -35,7 +35,8 @@ public class BankDetails extends Fragment {
     private FirebaseAuth mAuth;
 
     ProgressDialog dialog;
-    public static BankDetails newInstance(){
+
+    public static BankDetails newInstance() {
         return new BankDetails();
     }
 
@@ -68,7 +69,7 @@ public class BankDetails extends Fragment {
                 String ifscode = ifsc.getText().toString();
                 String acholdername = holdername.getText().toString();
 
-                if (TextUtils.isEmpty(ac_no) && (ac_no.length()>10)) {
+                if (TextUtils.isEmpty(ac_no) && (ac_no.length() > 10)) {
                     acwrap.setError("Enter Valid Account Number");
                 } else {
                     acwrap.setErrorEnabled(false);
@@ -87,10 +88,10 @@ public class BankDetails extends Fragment {
                 }
 
                 dialog.show();
-                HashMap<String,Object> map = new HashMap<>();
+                HashMap<String, Object> map = new HashMap<>();
                 map.put("AccountNo", ac_no);
-                map.put("IFSCCode",ifscode);
-                map.put("AcHolderName",acholdername);
+                map.put("IFSCCode", ifscode);
+                map.put("AcHolderName", acholdername);
                 UserRefs.updateChildren(map);
 
                 FirebaseDatabase.getInstance().getReference("Users").child(currentUser).child("ProfileIsComplete").setValue("true").addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -102,8 +103,6 @@ public class BankDetails extends Fragment {
                         dialog.dismiss();
                     }
                 });
-
-
             }
         });
 

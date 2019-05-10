@@ -30,6 +30,7 @@
 
     <string name="state_prompt">Select State</string>
     <string name="city_prompt">Select City</string>
+    <string name="choose_image">Choose Image</string>
 
     <string-array name="state_list">
         <item>Select State</item>

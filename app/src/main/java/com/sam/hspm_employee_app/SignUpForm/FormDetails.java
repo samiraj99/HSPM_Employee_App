@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.anton46.stepsview.StepsView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -62,7 +61,6 @@ public class FormDetails extends AppCompatActivity {
                 .setLabels(FormList);
 
         try {
-
             databaseReference.child(uid).child("Profile").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -102,6 +100,7 @@ public class FormDetails extends AppCompatActivity {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         Fragment selectedFragment = null;
+        System.out.println(flag);
         if (FormList[flag].equals(FormList[0])) {
             selectedFragment = PhotoUpload.newInstance();
             stepsView.setCompletedPosition(0)

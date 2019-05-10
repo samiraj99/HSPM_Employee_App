@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                             if (dataSnapshot.exists()) {
                                 AcceptedRequestId = dataSnapshot.getValue().toString();
                                 selectFragment();
-
+                                dialog.dismiss();
                             }
                         }
 
@@ -198,4 +198,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (dialog != null) {
+            dialog.dismiss();
+            dialog = null;
+        }
+    }
 }
