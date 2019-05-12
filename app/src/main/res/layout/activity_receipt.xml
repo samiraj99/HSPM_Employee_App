@@ -123,7 +123,7 @@
         android:text="@string/complete_request"
         android:background="#11A0CC"
         android:textColor="#fff"
-        android:padding="5dp"
+        android:padding="10dp"
         android:visibility="invisible"
     />
 

@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     ProgressDialog dialog;
     String IsVerified;
     private static final String TAG = "MainActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -178,11 +179,11 @@ public class MainActivity extends AppCompatActivity {
                                 selectedFragment = MenuFragment.newInstance();
                                 break;
                         }
-                     //   FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                        //   FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                         if (selectedFragment != null) {
                             getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, selectedFragment).commitAllowingStateLoss();
                         }
-                       // transaction.commit();
+                        // transaction.commit();
                         return true;
                     }
                 });
@@ -198,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
                 getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, ErrorFragment.newInstance()).commitAllowingStateLoss();
                 //transaction.commit();
             }
-        }else {
+        } else {
             transaction.replace(R.id.frame_layout, NotVerified.newInstance());
             transaction.commit();
         }
@@ -209,7 +210,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onDestroy() {
-        Toast.makeText(this, "Main activity destroy", Toast.LENGTH_SHORT).show();
         Log.d("MainActivity", "onDestroy: Main activity destroy");
         super.onDestroy();
         if (dialog != null) {

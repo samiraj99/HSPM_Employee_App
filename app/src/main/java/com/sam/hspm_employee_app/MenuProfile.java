@@ -23,7 +23,7 @@ import com.squareup.picasso.Picasso;
 
 public class MenuProfile extends AppCompatActivity {
 
-//  private static final int PICK_IMAGE_REQUEST = 1;
+    //  private static final int PICK_IMAGE_REQUEST = 1;
     EditText ET_Address;
     EditText TIET_Name, TIET_PhoneNO;
     FirebaseUser user;
@@ -33,7 +33,7 @@ public class MenuProfile extends AppCompatActivity {
     ProgressDialog dialog;
     FirebaseAuth auth;
     TextView TV_Email, TV_Name;
-//  Uri imageUri;
+    //  Uri imageUri;
     ImageView IV_Edit, IV_Done, IV_Back, IV_Edit_Profile, IV_Profile;
 
 //  String Id;
@@ -53,8 +53,8 @@ public class MenuProfile extends AppCompatActivity {
             uid = user.getUid();
         }
         IV_Profile = findViewById(R.id.ImageView_Profile);
-       // IV_Edit_Profile = findViewById(R.id.ImageView_Edit_Profile);
-      //  IV_Back = findViewById(R.id.ImageView_Arrow_Back);
+        // IV_Edit_Profile = findViewById(R.id.ImageView_Edit_Profile);
+        //  IV_Back = findViewById(R.id.ImageView_Arrow_Back);
         //IV_Edit = findViewById(R.id.ImageView_Edit);
         //IV_Done = findViewById(R.id.ImageView_Done);
 
@@ -68,12 +68,12 @@ public class MenuProfile extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    St_Name = dataSnapshot.child("ProfileDetails").child("FullName").getValue(String.class);
-                    St_Email = dataSnapshot.child("ProfileDetails").child("Email").getValue(String.class);
-                    St_PhoneNo = dataSnapshot.child("ProfileDetails").child("PhoneNo").getValue(String.class);
-                    St_Address = dataSnapshot.child("ProfileDetails").child("PermanentAddress").child("Address").getValue(String.class);
                     try {
+                        St_Name = dataSnapshot.child("ProfileDetails").child("FullName").getValue(String.class);
+                        St_Email = dataSnapshot.child("ProfileDetails").child("Email").getValue(String.class);
+                        St_Address = dataSnapshot.child("ProfileDetails").child("PermanentAddress").child("Address").getValue(String.class);
                         St_ProfileUrl = dataSnapshot.child("ProfileImage").getValue(String.class);
+                        St_PhoneNo = dataSnapshot.child("ProfileDetails").child("PhoneNo").getValue(String.class);
                     } catch (Exception e) {
                         Log.e("Error", e.getMessage());
                     }
