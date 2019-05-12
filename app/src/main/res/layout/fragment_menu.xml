@@ -4,208 +4,164 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-        <LinearLayout
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="20dp"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/tvProfile"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp">
 
-                <android.support.v7.widget.CardView
-                    android:id="@+id/tvProfile"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:padding="15dp"
+                    android:src="@drawable/ic_account_circle_black_24dp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="Profile"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/tvTC"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:padding="15dp"
+                    android:src="@drawable/ic_content_paste_black_24dp" />
+
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="22dp">
+                    android:gravity="center_vertical"
+                    android:text="Terms and Conditions"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
 
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_account_circle_black_24dp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginLeft="10dp"/>
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="60dp"
-                            android:gravity="center_vertical"
-                            >
+            </LinearLayout>
 
-                                <TextView
-                                    android:layout_width="155dp"
-                                    android:layout_height="41dp"
-                                    android:layout_alignParentStart="true"
-                                    android:layout_alignParentLeft="true"
-                                    android:layout_alignParentTop="true"
-                                    android:layout_marginStart="45dp"
-                                    android:layout_marginLeft="27dp"
-                                    android:gravity="center_vertical"
-                                    android:text="Profile"
-                                    android:textColor="#000000"
-                                    android:textSize="22dp" />
+        </android.support.v7.widget.CardView>
 
-                        </LinearLayout>
-                </android.support.v7.widget.CardView>
+        <android.support.v7.widget.CardView
+            android:id="@+id/tvPrivacy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:gravity="center_vertical">
 
-                <android.support.v7.widget.CardView
-                    android:id="@+id/tvTC"
-                    android:layout_width="match_parent"
+                <ImageView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="15dp">
+                    android:layout_gravity="center_vertical"
+                    android:padding="15dp"
+                    android:src="@drawable/ic_screen_lock_portrait_black_24dp" />
 
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_content_paste_black_24dp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginLeft="10dp"/>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="60dp"
-                            android:gravity="center_vertical"
-                            >
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_below="@+id/textView2"
-                                    android:layout_alignParentLeft="true"
-                                    android:layout_marginStart="45dp"
-                                    android:layout_marginLeft="27dp"
-                                    android:gravity="center_vertical"
-                                    android:text="T/C"
-                                    android:textColor="#000000"
-                                    android:textSize="22dp" />
-
-                        </LinearLayout>
-
-                </android.support.v7.widget.CardView>
-
-                <android.support.v7.widget.CardView
-                    android:id="@+id/tvPrivacy"
+                <TextView
                     android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="Privacy Policy"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/tvContact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="15dp">
+                    android:layout_gravity="center_vertical"
+                    android:padding="15dp"
+                    android:src="@drawable/ic_contact_phone_black_24dp" />
 
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:src="@drawable/ic_screen_lock_portrait_black_24dp"
-                            android:layout_marginLeft="10dp"/>
-
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="60dp"
-                            android:gravity="center_vertical"
-                            >
-
-
-                                <TextView
-                                    android:layout_width="155dp"
-                                    android:layout_height="41dp"
-                                    android:layout_below="@+id/textView3"
-                                    android:layout_alignParentLeft="true"
-                                    android:layout_marginStart="45dp"
-                                    android:layout_marginLeft="27dp"
-                                    android:gravity="center_vertical"
-                                    android:text="Privacy Policy"
-                                    android:textColor="#000000"
-                                    android:textSize="22dp" />
-
-                        </LinearLayout>
-                </android.support.v7.widget.CardView>
-
-
-                <android.support.v7.widget.CardView
-                    android:id="@+id/tvContact"
+                <TextView
                     android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="Contact Us"
+                    android:textSize="17dp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/tvLogout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:elevation="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="15dp">
+                    android:layout_gravity="center_vertical"
+                    android:padding="15dp"
+                    android:src="@drawable/ic_exit_to_app_black_24dp" />
 
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_contact_phone_black_24dp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginLeft="10dp"/>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="60dp"
-                            android:gravity="center_vertical"
-                            >
-
-                                <TextView
-                                    android:layout_width="155dp"
-                                    android:layout_height="41dp"
-                                    android:layout_below="@+id/textView5"
-                                    android:layout_alignParentLeft="true"
-                                    android:layout_marginStart="45dp"
-                                    android:layout_marginLeft="27dp"
-                                    android:gravity="center_vertical"
-                                    android:text="Contact Us"
-                                    android:textColor="#000000"
-                                    android:textSize="22dp" />
-
-                        </LinearLayout>
-                </android.support.v7.widget.CardView>
-
-                <android.support.v7.widget.CardView
-                    android:id="@+id/tvLogout"
+                <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginBottom="15dp"
-                    >
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="Logout"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
 
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_exit_to_app_black_24dp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginLeft="10dp"/>
+            </LinearLayout>
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="60dp"
-                            android:gravity="center_vertical"
-                            >
+        </android.support.v7.widget.CardView>
 
-                                <TextView
-                                    android:layout_width="155dp"
-                                    android:layout_height="41dp"
-                                    android:layout_below="@+id/textView6"
-                                    android:layout_alignParentLeft="true"
-                                    android:layout_marginStart="45dp"
-                                    android:layout_marginLeft="27dp"
-                                    android:gravity="center_vertical"
-                                    android:text="Logout"
-                                    android:textColor="#000000"
-                                    android:textSize="25dp"
-                                    />
-
-                        </LinearLayout>
-                </android.support.v7.widget.CardView>
-        </LinearLayout>
+    </LinearLayout>
 
 </ScrollView>
