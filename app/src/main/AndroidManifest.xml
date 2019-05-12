@@ -41,6 +41,7 @@
         <activity android:name=".SignUpForm.FormDetails" android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity android:name=".MenuProfile"/>
         <activity android:name=".ContactUs"/>
+        <activity android:name=".HistoryDetails"/>
 
     </application>
 

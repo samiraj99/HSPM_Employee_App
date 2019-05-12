@@ -183,72 +183,95 @@ public class NewServiceFragment extends Fragment {
     @Override
     public void onStart() {
         FirebaseApp.initializeApp(getContext());
-        databaseReference.child("Services").addChildEventListener(new ChildEventListener() {
+        databaseReference.child("Services").addValueEventListener(new ValueEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                if (dataSnapshot.exists()) {
-                    String status = "true";
-                    if (dataSnapshot.hasChild("Status")) {
-                        status = dataSnapshot.child("Status").getValue().toString();
-                    }
-                    if (status.equals("false")) {
-                        retrieveData(dataSnapshot);
-                    }
-                    Log.d(TAG, "onChildAdded: Address " + AddressList);
-                    adapter.notifyDataSetChanged();
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                if (dataSnapshot.exists()){
+                    databaseReference.child("Services").addChildEventListener(new ChildEventListener() {
+                        @Override
+                        public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                            if (dataSnapshot.exists()) {
+                                String status = "true";
+                                if (dataSnapshot.hasChild("Status")) {
+                                    status = dataSnapshot.child("Status").getValue().toString();
+                                }
+                                if (status.equals("false")) {
+                                    retrieveData(dataSnapshot);
+                                }
+                                Log.d(TAG, "onChildAdded: Address " + AddressList);
+                                adapter.notifyDataSetChanged();
+                                dialog.dismiss();
+                                checkService();
+                            }else {
+                                dialog.dismiss();
+                                checkService();
+                            }
+
+                        }
+
+                        @Override
+                        public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                            String status = "false";
+                            if (dataSnapshot.hasChild("Status")) {
+                                status = dataSnapshot.child("Status").getValue().toString();
+                            }
+                            if (status.equals("true")) {
+                                try {
+                                    Co_Ordinates co_ordinates = dataSnapshot.child("Address").child("Co_Ordinates").getValue(Co_Ordinates.class);
+                                    String Address = convertAddress(new LatLng(co_ordinates.Lat, co_ordinates.Lng));
+                                    AddressList.remove(Address);
+                                    String Id = dataSnapshot.getKey();
+                                    RequestIdList.remove(Id);
+                                    adapter.notifyDataSetChanged();
+
+                                } catch (Exception e) {
+                                    Log.e(TAG, "onChildRemoved: Exception " + e.getMessage());
+                                }
+                            }
+                            checkService();
+                        }
+
+                        @Override
+                        public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                            try {
+                                Co_Ordinates co_ordinates = dataSnapshot.child("Address").child("Co_Ordinates").getValue(Co_Ordinates.class);
+                                String Address = convertAddress(new LatLng(co_ordinates.Lat, co_ordinates.Lng));
+                                AddressList.remove(Address);
+                                String Id = dataSnapshot.getKey();
+                                RequestIdList.remove(Id);
+                                adapter.notifyDataSetChanged();
+
+                            } catch (Exception e) {
+                                Log.e(TAG, "onChildRemoved: Exception " + e.getMessage());
+                            }
+                            checkService();
+                        }
+
+                        @Override
+                        public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Log.d(TAG, "onCancelled: " + databaseError.getMessage());
+                            dialog.dismiss();
+                        }
+                    });
+
+                }else {
+                    dialog.dismiss();
+                    checkService();
                 }
-                dialog.dismiss();
-                checkService();
-            }
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                String status = "false";
-                if (dataSnapshot.hasChild("Status")) {
-                    status = dataSnapshot.child("Status").getValue().toString();
-                }
-                if (status.equals("true")) {
-                    try {
-                        Co_Ordinates co_ordinates = dataSnapshot.child("Address").child("Co_Ordinates").getValue(Co_Ordinates.class);
-                        String Address = convertAddress(new LatLng(co_ordinates.Lat, co_ordinates.Lng));
-                        AddressList.remove(Address);
-                        String Id = dataSnapshot.getKey();
-                        RequestIdList.remove(Id);
-                        adapter.notifyDataSetChanged();
-
-                    } catch (Exception e) {
-                        Log.e(TAG, "onChildRemoved: Exception " + e.getMessage());
-                    }
-                }
-                checkService();
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-                try {
-                    Co_Ordinates co_ordinates = dataSnapshot.child("Address").child("Co_Ordinates").getValue(Co_Ordinates.class);
-                    String Address = convertAddress(new LatLng(co_ordinates.Lat, co_ordinates.Lng));
-                    AddressList.remove(Address);
-                    String Id = dataSnapshot.getKey();
-                    RequestIdList.remove(Id);
-                    adapter.notifyDataSetChanged();
-
-                } catch (Exception e) {
-                    Log.e(TAG, "onChildRemoved: Exception " + e.getMessage());
-                }
-                checkService();
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.d(TAG, "onCancelled: " + databaseError.getMessage());
-                dialog.dismiss();
+                Log.d(TAG, "onCancelled: "+databaseError);
             }
         });
 

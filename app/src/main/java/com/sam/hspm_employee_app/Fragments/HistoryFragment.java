@@ -21,6 +21,7 @@
 package com.sam.hspm_employee_app.Fragments;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -29,6 +30,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -43,6 +45,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.sam.hspm_employee_app.HistoryDetails;
 import com.sam.hspm_employee_app.R;
 
 import java.util.ArrayList;
@@ -60,6 +63,7 @@ public class HistoryFragment extends Fragment {
     FirebaseUser firebaseUser;
     String uid, serviceId;
     ListView listView;
+    ArrayList<String> ServiceID = new ArrayList<>();
     ArrayList<String> ServiceStatus = new ArrayList<>();
     ArrayList<String> DateTime = new ArrayList<>();
     ArrayList<String> Amount = new ArrayList<>();
@@ -113,12 +117,24 @@ public class HistoryFragment extends Fragment {
         progressDialog.setCancelable(false);
         progressDialog.show();
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent i = new Intent(getContext(), HistoryDetails.class);
+                i.putExtra("ServiceId", ServiceID.get(position));
+                startActivity(i);
+                clientApp.delete();
+            }
+        });
         return v1;
     }
 
     @Override
     public void onStart() {
-
+        ServiceID.clear();
+        ServiceStatus.clear();
+        DateTime.clear();
+        Amount.clear();
         databaseReference.child("Users").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -169,13 +185,14 @@ public class HistoryFragment extends Fragment {
     }
 
 
-    private void retrieveData(String sid) {
+    private void retrieveData(final String sid) {
 
         Log.d(TAG, "retrieveData: 1 " + sid);
 
         clientDatabase.child("CompletedServices").child(sid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ServiceID.add(sid);
                 ServiceStatus.add("Service Completed");
                 DateTime.add(dataSnapshot.child("DateTime").child("Date").getValue().toString() + ", " + dataSnapshot.child("DateTime").child("Time").getValue().toString());
                 Amount.add("₹"+dataSnapshot.child("Total").getValue().toString());
