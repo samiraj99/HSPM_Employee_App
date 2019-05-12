@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,6 +18,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -49,6 +51,7 @@ public class PersonalDetails extends Fragment implements DatePickerDialog.OnDate
     EditText pincode;
     EditText correspondenceAdd;
     EditText pincode2;
+    TextInputEditText Email;
     CheckBox corAdd;
     RadioGroup gender;
     ArrayList<String>[] s = new ArrayList[36];
@@ -58,7 +61,7 @@ public class PersonalDetails extends Fragment implements DatePickerDialog.OnDate
     FirebaseUser mUser;
     DatabaseReference UserRefs;
     int id;
-    String uid, ST_fullName, ST_BirthDate, ST_Address, ST_State, ST_City, ST_PinCode, ST_gender;
+    String uid, ST_fullName, ST_BirthDate, ST_Address, ST_State, ST_City, ST_PinCode, ST_gender, ST_Email;
 
     public static PersonalDetails newInstance() {
         return new PersonalDetails();
@@ -83,6 +86,8 @@ public class PersonalDetails extends Fragment implements DatePickerDialog.OnDate
         corAdd = v1.findViewById(R.id.checkbox);
         // correspondenceAdd = v1.findViewById(R.id.correspond_address);
         buttonNext = v1.findViewById(R.id.BT_Profile_Next);
+        Email = v1.findViewById(R.id.TV_Email);
+
 
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
@@ -266,10 +271,14 @@ public class PersonalDetails extends Fragment implements DatePickerDialog.OnDate
                 id = gender.getCheckedRadioButtonId();
                 radioButton = v1.findViewById(id);
                 ST_gender = radioButton.getText().toString();
+                ST_Email = Email.getText().toString();
 
 
                 if (ST_fullName.isEmpty()) {
                     fullName.setError("Fields can't be empty.");
+                    dialog.dismiss();
+                } else if(ST_Email.isEmpty()){
+                    Email.setError("Fields can't be empty.");
                     dialog.dismiss();
                 } else if (ST_BirthDate.isEmpty()) {
                     dob.setError("Fields can't be empty");
@@ -277,12 +286,18 @@ public class PersonalDetails extends Fragment implements DatePickerDialog.OnDate
                 } else if (ST_Address.isEmpty()) {
                     permanentAdd.setError("Fields can't be empty");
                     dialog.dismiss();
+                } else if (ST_City.equals("Select City")){
+                    Toast.makeText(getActivity(), "Select City ..!", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                } else  if (ST_State.equals("Select State")){
+                    Toast.makeText(getActivity(), "Select State", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
                 } else if (ST_PinCode.isEmpty()) {
                     pincode.setError("Fields can't be empty");
                     dialog.dismiss();
                 } else {
                     String phno = mUser.getPhoneNumber();
-                    final Detail detail = new Detail(ST_fullName, ST_BirthDate, ST_gender, phno);
+                    final Detail detail = new Detail(ST_fullName, ST_BirthDate, ST_gender, phno , ST_Email);
                     mydatabase.child("Profile").child("ProfileDetails").setValue(detail).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {

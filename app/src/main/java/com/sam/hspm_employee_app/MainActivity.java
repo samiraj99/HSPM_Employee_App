@@ -40,7 +40,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sam.hspm_employee_app.Fragments.ErrorFragment;
-import com.sam.hspm_employee_app.Fragments.ItemThreeFragment;
+import com.sam.hspm_employee_app.Fragments.HistoryFragment;
 import com.sam.hspm_employee_app.Fragments.MenuFragment;
 import com.sam.hspm_employee_app.Fragments.NewServiceFragment;
 import com.sam.hspm_employee_app.Fragments.NotVerified;
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     String uid, AcceptedRequestId;
     ProgressDialog dialog;
     String IsVerified;
-
+    private static final String TAG = "MainActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -172,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                                 break;
                             case R.id.action_item3:
-                                selectedFragment = ItemThreeFragment.newInstance();
+                                selectedFragment = HistoryFragment.newInstance();
                                 break;
                             case R.id.action_item4:
                                 selectedFragment = MenuFragment.newInstance();

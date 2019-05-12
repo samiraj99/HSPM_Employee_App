@@ -56,7 +56,7 @@ public class IdVerification extends Fragment implements AdapterView.OnItemClickL
     Spinner spinner;
     ImageButton select;
     Button choose;
-    String Storage_Path ;
+    String Storage_Path;
 
     // Root Database Name for Firebase Database.
     String Database_Path = "Users";
@@ -79,22 +79,23 @@ public class IdVerification extends Fragment implements AdapterView.OnItemClickL
 
     String TempImageName;
 
-    ProgressDialog progressDialog ;
+    ProgressDialog progressDialog;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v1 = inflater.inflate(R.layout.activity_id_verification, container, false);
 
-        spinner =v1.findViewById(R.id.spinner);
-        select=v1.findViewById(R.id.ShowImage);
-        choose=v1.findViewById(R.id.btnchoose);
-        final Button upload=v1.findViewById(R.id.btnUpload);
+        spinner = v1.findViewById(R.id.spinner);
+        select = v1.findViewById(R.id.ShowImage);
+        choose = v1.findViewById(R.id.btnchoose);
+        final Button upload = v1.findViewById(R.id.btnUpload);
 
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
         uid = firebaseUser.getUid();
 
-        Storage_Path = "Employees /"+uid+"/";
+        Storage_Path = "Employees /" + uid + "/";
 
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
@@ -138,8 +139,6 @@ public class IdVerification extends Fragment implements AdapterView.OnItemClickL
         });
 
 
-
-
         return v1;
     }
 
@@ -165,8 +164,7 @@ public class IdVerification extends Fragment implements AdapterView.OnItemClickL
 
                 // After selecting image change choose button above text.
 
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
 
                 e.printStackTrace();
             }
@@ -181,7 +179,7 @@ public class IdVerification extends Fragment implements AdapterView.OnItemClickL
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
 
         // Returning the file Extension.
-        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri)) ;
+        return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
 
     }
 
@@ -193,6 +191,7 @@ public class IdVerification extends Fragment implements AdapterView.OnItemClickL
 
             // Setting progressDialog Title.
             progressDialog.setTitle("Image is Uploading...");
+            progressDialog.setCancelable(false);
 
             // Showing progressDialog.
             progressDialog.show();
@@ -209,18 +208,44 @@ public class IdVerification extends Fragment implements AdapterView.OnItemClickL
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
                             // Hiding the progressDialog after done uploading.
-                            progressDialog.dismiss();
+
 
                             TempImageName = spinner.getSelectedItem().toString();
                             // Showing toast message after done uploading.
-                            Toast.makeText(getContext(), TempImageName+" Uploaded Successfully ", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), TempImageName + " Uploaded Successfully ", Toast.LENGTH_LONG).show();
 
-                             storageReference2nd.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                 @Override
-                                 public void onSuccess(Uri uri) {
-                                     databaseReference.child(uid).child("Profile").child("IDs").child(TempImageName).setValue(uri.toString());
-                                 }
-                             })   ;
+                            storageReference2nd.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    databaseReference.child(uid).child("Profile").child("IDs").child(TempImageName).setValue(uri.toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+
+
+                                            databaseReference.child(uid).child("Profile").child("IDs").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                                    count = (int) dataSnapshot.getChildrenCount();
+
+                                                    if (count > 2) {
+                                                        ((FormDetails) Objects.requireNonNull(getActivity())).ChangeActivity();
+                                                    }
+                                                    progressDialog.dismiss();
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                }
+                                            });
+
+                                        }
+                                    });
+
+
+                                }
+                            });
 
                             // Getting image upload ID.
                             // Adding image upload id s child element into databaseReference.
@@ -250,23 +275,7 @@ public class IdVerification extends Fragment implements AdapterView.OnItemClickL
                             //displaying percentage in progress dialog
                             progressDialog.setMessage("Uploaded " + ((int) progress) + "%...");
 
-                            if (progress == 100){
-                                databaseReference.child(uid).child("Profile").child("IDs").addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                                        count = (int) dataSnapshot.getChildrenCount();
-
-                                        if (count>2){
-                                            ((FormDetails) Objects.requireNonNull(getActivity())).ChangeActivity();
-                                        }
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                    }
-                                });
+                            if (progress == 100) {
 
                             }
 
@@ -274,9 +283,7 @@ public class IdVerification extends Fragment implements AdapterView.OnItemClickL
                     });
 
 
-
-        }
-        else {
+        } else {
 
             Toast.makeText(getActivity(), "Please Select Image", Toast.LENGTH_LONG).show();
 

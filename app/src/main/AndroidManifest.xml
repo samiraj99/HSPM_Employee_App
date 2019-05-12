@@ -39,6 +39,9 @@
         <activity android:name=".RequestDetails" />
         <activity android:name=".VerifyPhoneActivity"/>
         <activity android:name=".SignUpForm.FormDetails" android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity android:name=".MenuProfile"/>
+        <activity android:name=".ContactUs"/>
+
     </application>
 
 </manifest>

@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <RelativeLayout
+            android:id="@+id/Relative_Layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/grad"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:paddingBottom="20dp">
+
+
+            <RelativeLayout
+                android:id="@+id/imgUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/circle_border">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/ImageView_Profile"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_margin="9dp"
+                    android:padding="3dp"
+                    android:src="@drawable/ic_user"
+                    app:civ_border_color="#FFF"
+                    app:civ_border_width="4dp" />
+
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/Profile_Image_first_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/imgUser"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
+                android:fontFamily="sans-serif-light"
+                android:text="Joey Tribbiani"
+                android:textColor="@color/white"
+                android:textSize="32sp" />
+            <TextView
+                android:id="@+id/Profile_image_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/Profile_Image_first_name"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="sans-serif"
+                android:text="@string/email_id"
+                android:textStyle="italic"
+                android:textSize="18sp"
+                />
+
+        </RelativeLayout>
+
+
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="5dp">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+                <TextView
+                    android:id="@+id/Profile_text_view_acc_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Profile Details"
+                    android:textSize="20sp"
+                    android:padding="5dp"
+                    android:textStyle="normal"
+                    android:layout_margin="10dp"
+                    android:textAllCaps="true"
+                    android:textColor="@color/colorPrimaryDark"
+
+                    />
+
+
+                <RelativeLayout
+                    android:id="@+id/TextInputLayout_first_name"
+                    android:layout_below="@id/Profile_text_view_acc_detail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    >
+
+                    <TextView
+                        android:id="@+id/TextView_Name1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/name"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:layout_marginStart="5dp"
+                        android:textSize="18sp"
+                        />
+
+                    <ImageView
+                        android:id="@+id/imgView_userIcon"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_below="@+id/TextView_Name1"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@color/gradStart"
+                        android:padding="8dp"
+                        android:src="@drawable/img_user"
+                        android:tint="@color/white" />
+
+                    <EditText
+                        android:id="@+id/Profile_first_name"
+                        android:layout_width="317dp"
+                        android:layout_height="39dp"
+                        android:layout_below="@+id/TextView_Name1"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_toEndOf="@id/imgView_userIcon"
+                        android:layout_toRightOf="@id/imgView_userIcon"
+                        android:background="@color/transparent"
+                        android:enabled="false"
+                        android:hint="@string/name"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:textColor="#1e1e1e"
+                        android:textSize="18sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/TextInputLayout_PhoneNo"
+                    android:layout_below="@+id/TextInputLayout_first_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:id="@+id/TextView_phoneNo"
+                        android:layout_width="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:text="@string/phoneno"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="18sp" />
+
+                    <ImageView
+                        android:id="@+id/imgView_PhoneIcon"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_below="@+id/TextView_phoneNo"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@color/gradStart"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_phone_black_24dp"
+                        android:tint="@color/white" />
+
+                    <EditText
+                        android:id="@+id/Profile_PhoneNo"
+                        android:layout_width="317dp"
+                        android:layout_height="41dp"
+                        android:layout_below="@+id/TextView_phoneNo"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_toEndOf="@id/imgView_PhoneIcon"
+                        android:layout_toRightOf="@id/imgView_PhoneIcon"
+                        android:background="@color/transparent"
+                        android:enabled="false"
+                        android:hint="@string/phoneno"
+                        android:inputType="phone"
+                        android:maxLines="1"
+                        android:textColor="#1e1e1e"
+                        android:textSize="18sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/TextInput_Profile_Address"
+                    android:layout_below="@+id/TextInputLayout_PhoneNo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp">
+
+                    <TextView
+                        android:id="@+id/TextView_address"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:text="@string/address"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="18sp" />
+
+                    <ImageView
+                        android:id="@+id/imgView_Address"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_below="@+id/TextView_address"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@color/gradStart"
+                        android:padding="8dp"
+                        android:src="@drawable/ic_location_city_black_24dp"
+                        android:tint="@color/white" />
+
+                    <EditText
+                        android:id="@+id/Profile_Address"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/TextView_address"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_toEndOf="@+id/imgView_Address"
+                        android:layout_toRightOf="@+id/imgView_Address"
+                        android:background="@color/transparent"
+                        android:enabled="false"
+                        android:hint="@string/address"
+                        android:inputType="textMultiLine"
+                        android:maxLines="4"
+                        android:minLines="2"
+                        android:textColor="#1e1e1e"
+                        android:textSize="18sp" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+        </android.support.v7.widget.CardView>
+    </LinearLayout>
+</ScrollView>

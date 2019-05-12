@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">HSPM_Employee_App</string>
+    <string name="app_name">HSPM Employee</string>
     <string name="notspecified">Not Specified</string>
     <string name="accept_request">Accepted Request</string>
     <string name="signout">SignOut</string>
@@ -31,6 +31,14 @@
     <string name="state_prompt">Select State</string>
     <string name="city_prompt">Select City</string>
     <string name="choose_image">Choose Image</string>
+    <string name="email_id">Email ID</string>
+    <string name="name">Name</string>
+    <string name="phoneno">PhoneNo</string>
+    <string name="address">Address</string>
+    <string name="sign_in">Sign In</string>
+    <string name="enter_code">enter code</string>
+    <string name="i_sent_you_a_code">I sent you a code, it will be detected automatically but if it is not detected you can put it below manually as well</string>
+    <string name="wait_for_the_code_i_sent_you">Wait for the code I sent you...</string>
 
     <string-array name="state_list">
         <item>Select State</item>

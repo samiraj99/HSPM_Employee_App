@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -59,7 +60,6 @@ public class NewServiceFragment extends Fragment {
     }
 
     View v1;
-    SwipeRefreshLayout pulltorefresh;
     DatabaseReference databaseReference, mydatabse;
     FirebaseDatabase firebaseDatabase;
     FirebaseApp clientApp;
@@ -76,6 +76,7 @@ public class NewServiceFragment extends Fragment {
     Geocoder geocoder;
     private static final int ERROR_DIALOG_REQUEST = 9001;
     boolean IsCureentServiceActive;
+    TextView TV_NoService;
 
 
     @Override
@@ -95,8 +96,8 @@ public class NewServiceFragment extends Fragment {
         firebaseDatabase = FirebaseDatabase.getInstance(clientApp);
         databaseReference = firebaseDatabase.getReference();
 
-        pulltorefresh = v1.findViewById(R.id.pulltorefresh);
         listView = v1.findViewById(R.id.ListView);
+        TV_NoService = v1.findViewById(R.id.TV_No_Services);
         firebaseAuth = FirebaseAuth.getInstance();
 
         geocoder = new Geocoder(getContext(), Locale.getDefault());
@@ -106,8 +107,11 @@ public class NewServiceFragment extends Fragment {
 
         uid = firebaseAuth.getCurrentUser().getUid();
 
-        adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, AddressList);
-        listView.setAdapter(adapter);
+        if (AddressList != null) {
+            adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, AddressList);
+            listView.setAdapter(adapter);
+        }
+        checkService();
 
         dialog = new ProgressDialog(getContext());
         dialog.setMessage("Loading...");
@@ -150,7 +154,7 @@ public class NewServiceFragment extends Fragment {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.e(TAG, "onFailure: "+e.getMessage() );
+                Log.e(TAG, "onFailure: " + e.getMessage());
             }
         });
     }
@@ -178,20 +182,23 @@ public class NewServiceFragment extends Fragment {
 
     @Override
     public void onStart() {
-
+        FirebaseApp.initializeApp(getContext());
         databaseReference.child("Services").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                String status = "true";
-                if (dataSnapshot.hasChild("Status")) {
-                    status = dataSnapshot.child("Status").getValue().toString();
+                if (dataSnapshot.exists()) {
+                    String status = "true";
+                    if (dataSnapshot.hasChild("Status")) {
+                        status = dataSnapshot.child("Status").getValue().toString();
+                    }
+                    if (status.equals("false")) {
+                        retrieveData(dataSnapshot);
+                    }
+                    Log.d(TAG, "onChildAdded: Address " + AddressList);
+                    adapter.notifyDataSetChanged();
                 }
-                if (status.equals("false")) {
-                    retrieveData(dataSnapshot);
-                }
-                Log.d(TAG, "onChildAdded: Address " + AddressList);
-                adapter.notifyDataSetChanged();
                 dialog.dismiss();
+                checkService();
             }
 
             @Override
@@ -213,6 +220,7 @@ public class NewServiceFragment extends Fragment {
                         Log.e(TAG, "onChildRemoved: Exception " + e.getMessage());
                     }
                 }
+                checkService();
             }
 
             @Override
@@ -229,6 +237,7 @@ public class NewServiceFragment extends Fragment {
                 } catch (Exception e) {
                     Log.e(TAG, "onChildRemoved: Exception " + e.getMessage());
                 }
+                checkService();
             }
 
             @Override
@@ -238,26 +247,27 @@ public class NewServiceFragment extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                Log.d(TAG, "onCancelled: " + databaseError.getMessage());
+                dialog.dismiss();
             }
         });
 
-        mydatabse.child("Users").child(uid).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                IsCureentServiceActive = !Objects.requireNonNull(dataSnapshot.child("AcceptedRequestId").getValue()).toString().equals("0");
-                Log.d(TAG, "onDataChange: IsCurrentServiceActive" + IsCureentServiceActive);
-                if (IsCureentServiceActive) {
-                    RequestId = dataSnapshot.child("AcceptedRequestId").getValue().toString();
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
+//        mydatabse.child("Users").child(uid).addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                IsCureentServiceActive = !Objects.requireNonNull(dataSnapshot.child("AcceptedRequestId").getValue()).toString().equals("0");
+//                Log.d(TAG, "onDataChange: IsCurrentServiceActive" + IsCureentServiceActive);
+//                if (IsCureentServiceActive) {
+//                    RequestId = dataSnapshot.child("AcceptedRequestId").getValue().toString();
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
 
         super.onStart();
     }
@@ -312,4 +322,17 @@ public class NewServiceFragment extends Fragment {
 
     }
 
+    private void checkService(){
+        if (AddressList.isEmpty()){
+            TV_NoService.setVisibility(View.VISIBLE);
+        }else {
+            TV_NoService.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        checkService();
+        super.onResume();
+    }
 }

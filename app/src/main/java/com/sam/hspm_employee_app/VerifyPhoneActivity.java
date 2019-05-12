@@ -2,11 +2,13 @@ package com.sam.hspm_employee_app;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -17,8 +19,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sam.hspm_employee_app.SignUpForm.FormDetails;
 
 import java.util.concurrent.TimeUnit;
@@ -31,7 +36,7 @@ public class VerifyPhoneActivity extends AppCompatActivity {
     private EditText editText;
     private DatabaseReference UserRefs;
     String currentUserId;
-
+    TextView TV_countDownTimer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +46,7 @@ public class VerifyPhoneActivity extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progressbar);
         editText = findViewById(R.id.editTextCode);
+        TV_countDownTimer = findViewById(R.id.TV_CountdownTimer);
 
         String phonenumber = getIntent().getStringExtra("phonenumber");
         sendVerificationCode(phonenumber);
@@ -68,6 +74,24 @@ public class VerifyPhoneActivity extends AppCompatActivity {
         signInWithCredential(credential);
     }
 
+    public void reverseTimer(int Seconds,final TextView tv){
+
+        new CountDownTimer(Seconds* 1000, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                int seconds = (int) (millisUntilFinished / 1000);
+                int minutes = seconds / 60;
+                seconds = seconds % 60;
+                tv.setText( String.format("%02d", minutes)
+                        + ":" + String.format("%02d", seconds));
+            }
+
+            public void onFinish() {
+
+            }
+        }.start();
+    }
+
     private void signInWithCredential(PhoneAuthCredential credential) {
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -77,16 +101,31 @@ public class VerifyPhoneActivity extends AppCompatActivity {
 
                             currentUserId = mAuth.getCurrentUser().getUid();
 
-                            UserRefs = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
+                            FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if(!dataSnapshot.exists()){
+                                        UserRefs = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserId);
+                                        UserRefs.child("Status").setValue("Active");
+                                        UserRefs.child("AcceptedRequestId").setValue("0");
+                                        UserRefs.child("ProfileIsComplete").setValue("false");
+                                        UserRefs.child("IsVerified").setValue("false");
+                                        Intent intent = new Intent(VerifyPhoneActivity.this, FormDetails.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        startActivity(intent);
+                                    }else {
+                                        Intent intent = new Intent(VerifyPhoneActivity.this, MainActivity.class);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        startActivity(intent);
+                                    }
+                                }
 
-                            UserRefs.child("Status").setValue("Active");
-                            UserRefs.child("AcceptedRequestId").setValue("0");
-                            UserRefs.child("ProfileIsComplete").setValue("false");
-                            UserRefs.child("IsVerified").setValue("false");
-                            Intent intent = new Intent(VerifyPhoneActivity.this, FormDetails.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
 
-                            startActivity(intent);
+                                }
+                            });
+
 
                         } else {
                             Toast.makeText(VerifyPhoneActivity.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
@@ -104,7 +143,7 @@ public class VerifyPhoneActivity extends AppCompatActivity {
                 TaskExecutors.MAIN_THREAD,
                 mCallBack
         );
-
+        reverseTimer(60, TV_countDownTimer);
     }
 
     private PhoneAuthProvider.OnVerificationStateChangedCallbacks

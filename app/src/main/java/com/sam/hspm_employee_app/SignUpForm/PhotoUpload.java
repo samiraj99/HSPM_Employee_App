@@ -176,7 +176,7 @@ public class PhotoUpload extends Fragment implements AdapterView.OnItemClickList
 
             // Showing progressDialog.
             progressDialog.show();
-
+            progressDialog.setCancelable(false);
             // Creating second StorageReference.
 
 

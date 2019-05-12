@@ -161,6 +161,7 @@ public class Receipt extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
+                                clientDatabase.child("Services").child(RequestId).child("Total").setValue(Total);
                                 Toast.makeText(Receipt.this, "Receipt Send", Toast.LENGTH_SHORT).show();
                                 progressDialog.dismiss();
                                 BT_sendReceipt.setVisibility(View.GONE);
