@@ -116,6 +116,7 @@ public class PickUpActivity extends AppCompatActivity {
                 map1.put("EstimateCost", est_Cost);
                 map1.put("Status", null);
                 map1.put("DateTime",dateAndTime);
+                map1.put("RequestAcceptedBy", uid);
 
                 clientDatabase.child("Services").child(RequestId).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -146,23 +147,10 @@ public class PickUpActivity extends AppCompatActivity {
 
                     }
                 });
-
-
-
             }
         });
 
     }
-
-
-
-
-
-
-
-
-
-
 
     @Override
     protected void onDestroy() {
