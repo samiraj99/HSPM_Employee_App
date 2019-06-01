@@ -41,6 +41,7 @@
     <string name="wait_for_the_code_i_sent_you">Wait for the code I sent you...</string>
     <string name="solved_issue">Solved Issue</string>
     <string name="client_details">Client Details</string>
+    <string name="pick_up">Pick Up</string>
 
     <string-array name="state_list">
         <item>Select State</item>

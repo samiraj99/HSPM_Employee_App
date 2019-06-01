@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PickUpActivity">
+
+    <TextView
+        android:id="@+id/TextView_PickUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="10dp"
+        android:text="PICK UP"
+        android:textColor="#000"
+        android:textSize="25sp" />
+
+
+    <TextView
+        android:id="@+id/TextView_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/TextView_PickUp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:text="How Many Time Required to delivered system?"
+        android:textSize="15sp"
+        />
+
+
+
+
+    <EditText
+        android:id="@+id/EditText_PickUpTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/TextView_1"
+        android:layout_margin="20dp"
+        android:inputType="text" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/EditText_PickUpTime"
+        android:layout_marginStart="20dp"
+        android:text="Estimate Cost?"
+        android:textSize="15sp" />
+
+    <EditText
+        android:id="@+id/EditText_PickUp_EstimateCost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/EditText_PickUpTime"
+        android:layout_margin="20dp"
+        android:inputType="text" />
+
+    <Button
+        android:id="@+id/Button_PickUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/EditText_PickUp_EstimateCost"
+        android:layout_centerHorizontal="true"
+        android:text="pick up" />
+</RelativeLayout>

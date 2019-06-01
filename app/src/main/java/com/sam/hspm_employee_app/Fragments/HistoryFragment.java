@@ -139,7 +139,7 @@ public class HistoryFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.hasChild("History")) {
-                    databaseReference.child("Users").child(uid).child("History").addChildEventListener(new ChildEventListener() {
+                    databaseReference.child("Users").child(uid).child("History").child("CompletedServices").addChildEventListener(new ChildEventListener() {
                         @Override
                         public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                             if (dataSnapshot.exists()) {

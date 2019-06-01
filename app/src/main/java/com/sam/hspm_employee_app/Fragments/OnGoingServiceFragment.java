@@ -43,6 +43,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sam.hspm_employee_app.MainActivity;
+import com.sam.hspm_employee_app.PickUpActivity;
 import com.sam.hspm_employee_app.R;
 import com.sam.hspm_employee_app.Receipt;
 
@@ -65,7 +66,7 @@ public class OnGoingServiceFragment extends Fragment {
     ProgressDialog progressDialog;
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
-    Button BtCompleteRequest;
+    Button BtCompleteRequest, BT_PickUp;
     Button BT_Employee_Location;
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -109,6 +110,7 @@ public class OnGoingServiceFragment extends Fragment {
         TV_PhoneNo = v1.findViewById(R.id.TextView_PhoneNo);
         BtCompleteRequest = v1.findViewById(R.id.Button_Complete_Request);
         BT_Employee_Location = v1.findViewById(R.id.Button_Employee_Location);
+        BT_PickUp = v1.findViewById(R.id.Button_PickUp);
 
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Loading..!");
@@ -138,6 +140,19 @@ public class OnGoingServiceFragment extends Fragment {
             }
         });
 
+        BT_PickUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getActivity(), PickUpActivity.class);
+                i.putExtra("RequestId", RequestId);
+                i.putExtra("UserId", UserId);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(i);
+                clientApp.delete();
+                getActivity().finish();
+            }
+        });
+
         //BT Complete is generate receipt button.
 
         BtCompleteRequest.setOnClickListener(new View.OnClickListener() {
@@ -146,7 +161,7 @@ public class OnGoingServiceFragment extends Fragment {
                 Intent i = new Intent(getActivity(), Receipt.class);
                 i.putExtra("RequestId", RequestId);
                 i.putExtra("UserId", UserId);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK| Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(i);
                 clientApp.delete();
                 getActivity().finish();
