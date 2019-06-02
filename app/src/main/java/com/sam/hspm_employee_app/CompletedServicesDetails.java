@@ -47,7 +47,7 @@ public class CompletedServicesDetails extends AppCompatActivity {
     View alertLayout;
     private ListView listView;
     private TextView TV_Total;
-    private static final String TAG = "CompletedServicesDetails";
+    private static final String TAG = "CompleteServiceDetail";
     FirebaseApp clientApp;
 
 
@@ -103,7 +103,7 @@ public class CompletedServicesDetails extends AppCompatActivity {
                     ProblemDetails p = dataSnapshot.child("Problem").getValue(ProblemDetails.class);
                     TV_PcType.setText(p.getPcType());
                     TV_ProblemType.setText(p.getProblemType());
-                    TV_AcceptDate.setText(dataSnapshot.child("DateTime").child("Date").getValue(String.class) + ", " + dataSnapshot.child("DateTime").child("Time").getValue(String.class));
+                    TV_AcceptDate.setText(dataSnapshot.child("DateTime").child("Accepted").child("Date").getValue(String.class) + ", " + dataSnapshot.child("DateTime").child("Accepted").child("Time").getValue(String.class));
                     for (DataSnapshot ds : dataSnapshot.child("Address").getChildren()) {
                         CompletedServicesDetails.Co_Ordinates co_ordinates = ds.getValue(CompletedServicesDetails.Co_Ordinates.class);
                         assert co_ordinates != null;

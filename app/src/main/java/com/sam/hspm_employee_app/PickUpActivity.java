@@ -115,7 +115,7 @@ public class PickUpActivity extends AppCompatActivity {
                 map1.put("EstimateTime", est_Time);
                 map1.put("EstimateCost", est_Cost);
                 map1.put("Status", null);
-                map1.put("DateTime",dateAndTime);
+                map1.put("DateTime/PickUp",dateAndTime);
                 map1.put("RequestAcceptedBy", uid);
 
                 clientDatabase.child("Services").child(RequestId).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -129,8 +129,8 @@ public class PickUpActivity extends AppCompatActivity {
                                 } else {
                                     clientDatabase.child("PendingServices").child(RequestId).updateChildren(map1);
                                     clientDatabase.child("Services").child(RequestId).removeValue();
-                                    clientDatabase.child("Users").child(UserId).child("History").child("PendingServices").push().setValue(RequestId);
-                                    employeeDatabase.child("Users").child(uid).child("History").child("PendingServices").push().setValue(RequestId);
+                                    clientDatabase.child("Users").child(UserId).child("History").child("PendingServices").child(RequestId).setValue(RequestId);
+                                    employeeDatabase.child("Users").child(uid).child("History").child("PendingServices").child(RequestId).setValue(RequestId);
                                     employeeDatabase.child("Users").child(uid).child("AcceptedRequestId").setValue(0);
                                     clientDatabase.child("Users").child(UserId).updateChildren(map);
                                     dialog.dismiss();

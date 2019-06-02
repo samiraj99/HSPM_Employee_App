@@ -26,23 +26,27 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 public class RequestDetails extends AppCompatActivity {
 
     private static final String TAG = "RequestDetails";
-    DatabaseReference databaseReference,mydatabase;
+    DatabaseReference databaseReference, mydatabase;
     FirebaseDatabase firebaseDatabase;
-    private static String RequestId,UserId,Address,uid;
+    private static String RequestId, UserId, Address, uid;
     private static String PcType, ProblemType, SpecifiedProblem;
     private static double Lat, Lng;
-    FirebaseApp clientApp ;
-    TextView TV_Address,TV_PcType,TV_ProblemType,TV_SpecifiedProblem;
+    FirebaseApp clientApp;
+    TextView TV_Address, TV_PcType, TV_ProblemType, TV_SpecifiedProblem;
     ProgressDialog dialog;
     FirebaseAuth firebaseAuth;
-    FirebaseUser  firebaseUser;
+    FirebaseUser firebaseUser;
     Button BT_Accept;
+    Receipt.DateandTime dateAndTime;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +78,6 @@ public class RequestDetails extends AppCompatActivity {
         dialog.setMessage("Loading");
         dialog.show();
 
-
         try {
             RequestId = getIntent().getExtras().getString("RequestId").trim();
         } catch (Exception e) {
@@ -93,12 +96,12 @@ public class RequestDetails extends AppCompatActivity {
                     SpecifiedProblem = dataSnapshot.child("Problem").child("SpecifiedProblem").getValue().toString().trim();
                     Lat = ((double) dataSnapshot.child("Address").child("Co_Ordinates").child("Lat").getValue());
                     Lng = ((double) dataSnapshot.child("Address").child("Co_Ordinates").child("Lng").getValue());
-                    convertAddress(new LatLng(Lat,Lng));
+                    convertAddress(new LatLng(Lat, Lng));
                     dialog.dismiss();
                     TV_Address.setText(Address);
-                    if (SpecifiedProblem.isEmpty()){
+                    if (SpecifiedProblem.isEmpty()) {
                         TV_SpecifiedProblem.setText(getString(R.string.notspecified));
-                    }else {
+                    } else {
                         TV_SpecifiedProblem.setText(SpecifiedProblem);
                     }
                     TV_ProblemType.setText(ProblemType);
@@ -112,7 +115,7 @@ public class RequestDetails extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.d(TAG, "onCancelled: DatabaseError "+ databaseError.getMessage());
+                Log.d(TAG, "onCancelled: DatabaseError " + databaseError.getMessage());
             }
         });
 
@@ -120,11 +123,12 @@ public class RequestDetails extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 databaseReference.child("Services").child(RequestId).child("Status").setValue("true");
+                databaseReference.child("Services").child(RequestId).child("DateTime").child("Accepted").setValue(getTime());
                 databaseReference.child("Users").child(UserId).child("RequestAcceptedBy").setValue(uid).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        Intent i = new Intent(RequestDetails.this,MainActivity.class);
-                        i.putExtra("RequestId",RequestId);
+                        Intent i = new Intent(RequestDetails.this, MainActivity.class);
+                        i.putExtra("RequestId", RequestId);
                         startActivity(i);
                         writeToDatabase(RequestId);
                         finish();
@@ -136,20 +140,30 @@ public class RequestDetails extends AppCompatActivity {
 
     }
 
+    Receipt.DateandTime getTime() {
 
-    private void writeToDatabase(String RequestID){
+        Date cTime = Calendar.getInstance().getTime();
+        String date = cTime.getDate() + "/" + (cTime.getMonth() + 1) + "/" + (cTime.getYear() - 100);
+        String time = cTime.getHours() + ":" + cTime.getMinutes();
+        dateAndTime = new Receipt.DateandTime(date, time);
+
+        return dateAndTime;
+    }
+
+    private void writeToDatabase(String RequestID) {
         mydatabase.child("Users").child(uid).child("Status").setValue("Active");
         mydatabase.child("Users").child(uid).child("AcceptedRequestId").setValue(RequestID).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()){
+                if (task.isSuccessful()) {
                     Log.d(TAG, "onComplete: Sucesss");
-                }else {
-                    Log.d(TAG, "onComplete: Errpor "+ task.getException());
+                } else {
+                    Log.d(TAG, "onComplete: Errpor " + task.getException());
                 }
             }
         });
     }
+
     @Override
     protected void onDestroy() {
         clientApp.delete();
@@ -160,7 +174,7 @@ public class RequestDetails extends AppCompatActivity {
         Geocoder geocoder = new Geocoder(this, Locale.getDefault());
         try {
             List<Address> Location = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
-             Address = Location.get(0).getAddressLine(0);
+            Address = Location.get(0).getAddressLine(0);
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -48,8 +49,9 @@ public class Receipt extends AppCompatActivity {
     FirebaseApp clientApp;
     String RequestId, UserId;
     ProgressDialog progressDialog;
-    public DateandTime dateandTime;
-
+    public DateandTime dateAndTime;
+    boolean IsPending;
+    private static final String TAG = "Receipt";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,18 +83,18 @@ public class Receipt extends AppCompatActivity {
         firebaseDatabase = FirebaseDatabase.getInstance(clientApp);
         clientDatabase = firebaseDatabase.getReference();
 
-        if (getIntent() != null) {
-            RequestId = getIntent().getExtras().getString("RequestId");
-            UserId = getIntent().getExtras().getString("UserId");
+        try {
+            if (getIntent() != null) {
+                RequestId = getIntent().getExtras().getString("RequestId");
+                UserId = getIntent().getExtras().getString("UserId");
+                IsPending = getIntent().getExtras().getBoolean("IsPending");
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "onCreate: " + e.getMessage());
         }
 
 
         //get current time
-
-        Date cTime = Calendar.getInstance().getTime();
-        String date = cTime.getDate() + "/" + (cTime.getMonth() + 1) + "/" + (cTime.getYear() - 100);
-        String time = cTime.getHours() + ":" + cTime.getMinutes();
-        dateandTime = new DateandTime(date, time);
 
 
         imageView_Add.setOnClickListener(new View.OnClickListener() {
@@ -151,29 +153,11 @@ public class Receipt extends AppCompatActivity {
         BT_sendReceipt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressDialog.setMessage("Sending Receipt");
-                progressDialog.setCancelable(true);
-                progressDialog.show();
-
-                for (int i = 0; i < SolvedProblem.size(); i++) {
-                    Helper helper = new Helper(SolvedProblem.get(i), Amount.get(i));
-                    clientDatabase.child("Services").child(RequestId).child("Receipt").child(String.valueOf(i)).setValue(helper).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                clientDatabase.child("Services").child(RequestId).child("Total").setValue(Total);
-                                Toast.makeText(Receipt.this, "Receipt Send", Toast.LENGTH_SHORT).show();
-                                progressDialog.dismiss();
-                                BT_sendReceipt.setVisibility(View.GONE);
-                                BT_completeRequest.setVisibility(View.VISIBLE);
-                                imageView_Add.setVisibility(View.INVISIBLE);
-                                clientDatabase.child("Users").child(UserId).child("Receipt").setValue("1");
-                            }
-                        }
-                    });
+                if (IsPending) {
+                    sendReceipt("PendingServices");
+                } else {
+                    sendReceipt("Services");
                 }
-
-
             }
         });
 
@@ -181,29 +165,72 @@ public class Receipt extends AppCompatActivity {
         BT_completeRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clientDatabase.child("Services").child(RequestId).child("RequestAcceptedBy").setValue(uid).addOnCompleteListener(new OnCompleteListener<Void>() {
+                if (IsPending) {
+                    completeRequest("PendingServices");
+                } else {
+                    completeRequest("Services");
+                }
+            }
+        });
+
+
+    }
+
+    void completeRequest(final String serviceType) {
+        clientDatabase.child(serviceType).child(RequestId).child("RequestAcceptedBy").setValue(uid).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                clientDatabase.child(serviceType).child(RequestId).child("DateTime").child("Completed").setValue(getTime());
+                mydatabase.child("Users").child(uid).child("AcceptedRequestId").setValue(0).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        clientDatabase.child("Services").child(RequestId).child("DateTime").setValue(dateandTime);
-                        mydatabase.child("Users").child(uid).child("AcceptedRequestId").setValue(0).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                clientDatabase.child("Users").child(UserId).child("Payment").setValue(1);
-                                clientDatabase.child("Users").child(UserId).child("CurrentService").setValue(0);
-                                Intent i = new Intent(Receipt.this, MainActivity.class);
-                                startActivity(i);
-                                finish();
-                                clientApp.delete();
-                            }
-                        });
-
+                        clientDatabase.child("Users").child(UserId).child("Payment").setValue(1);
+                        clientDatabase.child("Users").child(UserId).child("CurrentService").setValue(0);
+                        Intent i = new Intent(Receipt.this, MainActivity.class);
+                        startActivity(i);
+                        finish();
+                        clientApp.delete();
                     }
                 });
 
             }
         });
+    }
 
 
+    void sendReceipt(final String serviceType) {
+        progressDialog.setMessage("Sending Receipt");
+        progressDialog.setCancelable(true);
+        progressDialog.show();
+
+        for (int i = 0; i < SolvedProblem.size(); i++) {
+            Helper helper = new Helper(SolvedProblem.get(i), Amount.get(i));
+            clientDatabase.child(serviceType).child(RequestId).child("Receipt").child(String.valueOf(i)).setValue(helper).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        clientDatabase.child(serviceType).child(RequestId).child("Total").setValue(Total);
+                        Toast.makeText(Receipt.this, "Receipt Send", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                        BT_sendReceipt.setVisibility(View.GONE);
+                        BT_completeRequest.setVisibility(View.VISIBLE);
+                        imageView_Add.setVisibility(View.INVISIBLE);
+                        clientDatabase.child("Users").child(UserId).child("Receipt").setValue("1");
+                        if (IsPending){clientDatabase.child("Users").child(UserId).child("CurrentService").setValue("1");}
+                    }
+                }
+            });
+        }
+    }
+
+    Receipt.DateandTime getTime() {
+
+        Date cTime = Calendar.getInstance().getTime();
+        String date = cTime.getDate() + "/" + (cTime.getMonth() + 1) + "/" + (cTime.getYear() - 100);
+        String time = cTime.getHours() + ":" + cTime.getMinutes();
+        dateAndTime = new Receipt.DateandTime(date, time);
+
+        return dateAndTime;
     }
 
     @Override
@@ -224,7 +251,7 @@ public class Receipt extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent i = new Intent(Receipt.this,MainActivity.class);
+        Intent i = new Intent(Receipt.this, MainActivity.class);
         startActivity(i);
         super.onBackPressed();
     }

@@ -85,7 +85,7 @@ public class PendingServices extends Fragment {
         }
 
         progressDialog = new ProgressDialog(getContext());
-        progressDialog.setMessage("Loading");
+        progressDialog.setMessage("Loading...!");
         progressDialog.setCancelable(false);
         progressDialog.show();
 
@@ -110,13 +110,14 @@ public class PendingServices extends Fragment {
         databaseReference.child("Users").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.hasChild("History")) {
+                if (dataSnapshot.hasChild("History/PendingServices")) {
                     databaseReference.child("Users").child(uid).child("History").child("PendingServices").addChildEventListener(new ChildEventListener() {
                         @Override
                         public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                             if (dataSnapshot.exists()) {
                                 serviceId = dataSnapshot.getValue(String.class);
                                 retrieveData(serviceId);
+                                progressDialog.dismiss();
                             }
 
                         }
@@ -167,8 +168,8 @@ public class PendingServices extends Fragment {
                 try {
                     ServiceID.add(sid);
                     ServiceStatus.add("Service Completed");
-                    DateTime.add(dataSnapshot.child("DateTime").child("Date").getValue().toString() + ", " + dataSnapshot.child("DateTime").child("Time").getValue().toString());
-                    Amount.add(dataSnapshot.child("EstimateTime").getValue().toString());
+                    DateTime.add(dataSnapshot.child("DateTime").child("Accepted").child("Date").getValue().toString() + ", " + dataSnapshot.child("DateTime").child("Accepted").child("Time").getValue().toString());
+                    Amount.add(dataSnapshot.child("EstimateCost").getValue().toString());
                     customAdapter.notifyDataSetChanged();
                     progressDialog.dismiss();
                 } catch (Exception e) {

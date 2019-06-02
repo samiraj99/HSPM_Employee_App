@@ -127,7 +127,9 @@
             android:layout_marginEnd="20dp"
             android:background="#fff"
             android:padding="10dp"
-            android:text="@string/generate_receipt" />
+            android:text="@string/generate_receipt"
+            android:visibility="gone"
+            />
 
         <Button
             android:id="@+id/Button_PickUp"
@@ -138,8 +140,20 @@
             android:layout_marginStart="20dp"
             android:background="#fff"
             android:padding="10dp"
-            android:text="@string/pick_up" />
-
+            android:text="@string/pick_up"
+            android:visibility="gone"
+            />
+        <Button
+            android:id="@+id/Button_Reached"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/map_layout"
+            android:layout_marginStart="20dp"
+            android:background="#fff"
+            android:padding="10dp"
+            android:text="@string/reached"
+            android:layout_centerHorizontal="true"
+            />
 
     </RelativeLayout>
 </ScrollView>

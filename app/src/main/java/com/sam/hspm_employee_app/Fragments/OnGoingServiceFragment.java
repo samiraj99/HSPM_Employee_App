@@ -48,6 +48,8 @@ import com.sam.hspm_employee_app.R;
 import com.sam.hspm_employee_app.Receipt;
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -66,7 +68,7 @@ public class OnGoingServiceFragment extends Fragment {
     ProgressDialog progressDialog;
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
-    Button BtCompleteRequest, BT_PickUp;
+    Button BtCompleteRequest, BT_PickUp, BT_Reached;
     Button BT_Employee_Location;
     private static final String FINE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final String COARSE_LOCATION = Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -78,6 +80,8 @@ public class OnGoingServiceFragment extends Fragment {
     LocationManager locationManager;
     LocationListener locationListener;
     View v1;
+    Boolean IsReached;
+    Receipt.DateandTime dateAndTime;
 
     public static OnGoingServiceFragment newInstance() {
         return new OnGoingServiceFragment();
@@ -111,6 +115,7 @@ public class OnGoingServiceFragment extends Fragment {
         BtCompleteRequest = v1.findViewById(R.id.Button_Complete_Request);
         BT_Employee_Location = v1.findViewById(R.id.Button_Employee_Location);
         BT_PickUp = v1.findViewById(R.id.Button_PickUp);
+        BT_Reached = v1.findViewById(R.id.Button_Reached);
 
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Loading..!");
@@ -161,12 +166,40 @@ public class OnGoingServiceFragment extends Fragment {
                 Intent i = new Intent(getActivity(), Receipt.class);
                 i.putExtra("RequestId", RequestId);
                 i.putExtra("UserId", UserId);
+                i.putExtra("IsPending", false);
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(i);
                 clientApp.delete();
                 getActivity().finish();
             }
 
+        });
+
+
+        BT_Reached.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Confirm Reached!")
+                        .setMessage("Are you sure you reached?")
+                        .setCancelable(false);
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        clientDatabase.child("Services").child(RequestId).child("DateTime").child("Reached").setValue(getTime());
+                        dialog.dismiss();
+                    }
+
+                });
+                builder.create();
+                builder.show();
+            }
         });
 
 
@@ -275,6 +308,16 @@ public class OnGoingServiceFragment extends Fragment {
         });
     }
 
+    private Receipt.DateandTime getTime() {
+
+        Date cTime = Calendar.getInstance().getTime();
+        String date = cTime.getDate() + "/" + (cTime.getMonth() + 1) + "/" + (cTime.getYear() - 100);
+        String time = cTime.getHours() + ":" + cTime.getMinutes();
+        dateAndTime = new Receipt.DateandTime(date, time);
+
+        return dateAndTime;
+    }
+
     private void displayData() {
         clientDatabase.child("Users").child(UserId).child("Profile").child("ProfileInfo").addValueEventListener(new ValueEventListener() {
             @Override
@@ -295,6 +338,17 @@ public class OnGoingServiceFragment extends Fragment {
         });
     }
 
+    public void updateButtons(){
+        if (IsReached){
+            BT_Reached.setVisibility(View.GONE);
+            BT_PickUp.setVisibility(View.VISIBLE);
+            BtCompleteRequest.setVisibility(View.VISIBLE);
+        }else {
+            BT_Reached.setVisibility(View.VISIBLE);
+            BT_PickUp.setVisibility(View.GONE);
+            BtCompleteRequest.setVisibility(View.GONE);
+        }
+    }
 
     private void RetrieveData(String RequestId) {
         clientDatabase.child("Services").child(RequestId).addValueEventListener(new ValueEventListener() {
@@ -302,6 +356,12 @@ public class OnGoingServiceFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     UserId = dataSnapshot.child("Uid").getValue().toString();
+                    try {
+                        IsReached = dataSnapshot.child("DateTime").hasChild("Reached");
+                        updateButtons();
+                    } catch (Exception e) {
+                        Log.d(TAG, "onDataChange: " + e.getMessage());
+                    }
                     Lat = Double.parseDouble(dataSnapshot.child("Address").child("Co_Ordinates").child("Lat").getValue().toString());
                     Lng = Double.parseDouble(dataSnapshot.child("Address").child("Co_Ordinates").child("Lng").getValue().toString());
                     Log.d(TAG, "onDataChange: Lat,Lng" + Lat + Lng);

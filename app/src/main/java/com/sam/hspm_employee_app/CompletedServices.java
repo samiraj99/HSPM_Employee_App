@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -110,7 +111,7 @@ public class CompletedServices extends Fragment {
         databaseReference.child("Users").child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.hasChild("History")) {
+                if (dataSnapshot.hasChild("History/CompletedServices")) {
                     databaseReference.child("Users").child(uid).child("History").child("CompletedServices").addChildEventListener(new ChildEventListener() {
                         @Override
                         public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
@@ -161,12 +162,12 @@ public class CompletedServices extends Fragment {
 
         Log.d(TAG, "retrieveData: 1 " + sid);
 
-        clientDatabase.child("CompletedServices").child(sid).addValueEventListener(new ValueEventListener() {
+        clientDatabase.child("CompletedServices").child(sid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ServiceID.add(sid);
                 ServiceStatus.add("Service Completed");
-                DateTime.add(dataSnapshot.child("DateTime").child("Date").getValue().toString() + ", " + dataSnapshot.child("DateTime").child("Time").getValue().toString());
+                DateTime.add(dataSnapshot.child("DateTime").child("Accepted").child("Date").getValue().toString() + ", " + dataSnapshot.child("DateTime").child("Accepted").child("Time").getValue().toString());
                 Amount.add(dataSnapshot.child("Total").getValue().toString());
                 customAdapter.notifyDataSetChanged();
                 progressDialog.dismiss();
@@ -217,6 +218,7 @@ public class CompletedServices extends Fragment {
 
     @Override
     public void onDestroy() {
+        Toast.makeText(getActivity(), "Completed Service destroy", Toast.LENGTH_SHORT).show();
         clientApp.delete();
         super.onDestroy();
     }

@@ -9,21 +9,24 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.sam.hspm_employee_app.CompletedServices;
+import com.sam.hspm_employee_app.PendingServices;
 import com.sam.hspm_employee_app.R;
 import com.sam.hspm_employee_app.Pager;
 
 public class FragmentHistory extends Fragment {
 
-    private TabLayout tabLayout;
     private ViewPager viewPager;
     View v1;
-
+    CompletedServices completedServices = new CompletedServices();
+    PendingServices pendingServices = new PendingServices();
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         v1 = inflater.inflate(R.layout.fragment_history, container, false);
 
-        tabLayout = v1.findViewById(R.id.tabLayout);
+        TabLayout tabLayout = v1.findViewById(R.id.tabLayout);
 
         tabLayout.addTab(tabLayout.newTab().setText("Completed \nServices"));
         tabLayout.addTab(tabLayout.newTab().setText("Pending \nServices"));
@@ -31,7 +34,7 @@ public class FragmentHistory extends Fragment {
 
         viewPager = v1.findViewById(R.id.pager);
 
-        Pager adapter = new Pager(getFragmentManager(), tabLayout.getTabCount());
+        Pager adapter = new Pager(getChildFragmentManager(), tabLayout.getTabCount());
 
         viewPager.setAdapter(adapter);
 
