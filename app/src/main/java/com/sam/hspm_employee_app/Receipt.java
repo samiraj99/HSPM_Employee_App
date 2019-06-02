@@ -203,23 +203,30 @@ public class Receipt extends AppCompatActivity {
         progressDialog.setCancelable(true);
         progressDialog.show();
 
-        for (int i = 0; i < SolvedProblem.size(); i++) {
-            Helper helper = new Helper(SolvedProblem.get(i), Amount.get(i));
-            clientDatabase.child(serviceType).child(RequestId).child("Receipt").child(String.valueOf(i)).setValue(helper).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if (task.isSuccessful()) {
-                        clientDatabase.child(serviceType).child(RequestId).child("Total").setValue(Total);
-                        Toast.makeText(Receipt.this, "Receipt Send", Toast.LENGTH_SHORT).show();
-                        progressDialog.dismiss();
-                        BT_sendReceipt.setVisibility(View.GONE);
-                        BT_completeRequest.setVisibility(View.VISIBLE);
-                        imageView_Add.setVisibility(View.INVISIBLE);
-                        clientDatabase.child("Users").child(UserId).child("Receipt").setValue("1");
-                        if (IsPending){clientDatabase.child("Users").child(UserId).child("CurrentService").setValue("1");}
+        if (!SolvedProblem.isEmpty()) {
+            for (int i = 0; i < SolvedProblem.size(); i++) {
+                Helper helper = new Helper(SolvedProblem.get(i), Amount.get(i));
+                clientDatabase.child(serviceType).child(RequestId).child("Receipt").child(String.valueOf(i)).setValue(helper).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            clientDatabase.child(serviceType).child(RequestId).child("Total").setValue(Total);
+                            Toast.makeText(Receipt.this, "Receipt Send", Toast.LENGTH_SHORT).show();
+                            progressDialog.dismiss();
+                            BT_sendReceipt.setVisibility(View.GONE);
+                            BT_completeRequest.setVisibility(View.VISIBLE);
+                            imageView_Add.setVisibility(View.INVISIBLE);
+                            clientDatabase.child("Users").child(UserId).child("Receipt").setValue("1");
+                            if (IsPending) {
+                                clientDatabase.child("Users").child(UserId).child("CurrentService").setValue("1");
+                            }
+                        }
                     }
-                }
-            });
+                });
+            }
+        }else {
+            Toast.makeText(this, "Receipt can't be empty.", Toast.LENGTH_SHORT).show();
+            progressDialog.dismiss();
         }
     }
 

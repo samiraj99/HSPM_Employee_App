@@ -39,6 +39,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.sam.hspm_employee_app.Fragments.CompleteServiceErrorFragment;
 import com.sam.hspm_employee_app.Fragments.ErrorFragment;
 import com.sam.hspm_employee_app.Fragments.FragmentHistory;
 import com.sam.hspm_employee_app.Fragments.MenuFragment;
@@ -152,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
                             case R.id.action_item1:
                                 if (IsVerified.equals("true")) {
                                     if (!AcceptedRequestId.equals("0")) {
-                                        selectedFragment = ErrorFragment.newInstance();
+                                        selectedFragment = CompleteServiceErrorFragment.newInstance();
                                     } else {
                                         selectedFragment = NewServiceFragment.newInstance();
                                     }
@@ -196,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
                 getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, NewServiceFragment.newInstance()).commitAllowingStateLoss();
                 //transaction.commit();
             } else {
-                getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, ErrorFragment.newInstance()).commitAllowingStateLoss();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frame_layout, CompleteServiceErrorFragment.newInstance()).commitAllowingStateLoss();
                 //transaction.commit();
             }
         } else {
