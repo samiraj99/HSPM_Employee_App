@@ -214,8 +214,7 @@ public class PendingServices extends Fragment {
                 serviceStatus.setText(ServiceStatus.get(position));
                 dateAndTime.setText(DateTime.get(position));
                 amount.setText(Amount.get(position));
-            }catch (Exception e)
-            {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
