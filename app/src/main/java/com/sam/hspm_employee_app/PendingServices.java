@@ -210,9 +210,14 @@ public class PendingServices extends Fragment {
             dateAndTime = view.findViewById(R.id.dateandtime);
             amount = view.findViewById(R.id.amount);
 
-            serviceStatus.setText(ServiceStatus.get(position));
-            dateAndTime.setText(DateTime.get(position));
-            amount.setText(Amount.get(position));
+            try {
+                serviceStatus.setText(ServiceStatus.get(position));
+                dateAndTime.setText(DateTime.get(position));
+                amount.setText(Amount.get(position));
+            }catch (Exception e)
+            {
+                e.printStackTrace();
+            }
 
             return view;
         }
