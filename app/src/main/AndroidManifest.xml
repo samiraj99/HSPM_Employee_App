@@ -43,6 +43,8 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".MenuProfile" />
         <activity android:name=".ContactUs" />
+        <activity android:name=".PendingServicesDetails"/>
+        <activity android:name=".CompletedServicesDetails"/>
     </application>
 
 </manifest>
