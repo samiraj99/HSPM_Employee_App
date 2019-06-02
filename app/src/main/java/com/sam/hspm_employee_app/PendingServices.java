@@ -31,7 +31,7 @@ import java.util.ArrayList;
 public class PendingServices extends Fragment {
 
     View v1;
-    private DatabaseReference databaseReference,clientDatabase;
+    private DatabaseReference databaseReference, clientDatabase;
     private FirebaseDatabase firebaseDatabase;
     FirebaseAuth firebaseAuth;
     FirebaseUser firebaseUser;
@@ -92,7 +92,7 @@ public class PendingServices extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent(getContext(), HistoryDetails.class);
+                Intent i = new Intent(getContext(), PendingServicesDetails.class);
                 i.putExtra("ServiceId", ServiceID.get(position));
                 startActivity(i);
                 cliApp.delete();
@@ -164,12 +164,16 @@ public class PendingServices extends Fragment {
         clientDatabase.child("PendingServices").child(sid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                ServiceID.add(sid);
-                ServiceStatus.add("Service Completed");
-                DateTime.add(dataSnapshot.child("DateTime").child("Date").getValue().toString() + ", " + dataSnapshot.child("DateTime").child("Time").getValue().toString());
-                Amount.add(dataSnapshot.child("EstimateTime").getValue().toString());
-                customAdapter.notifyDataSetChanged();
-                progressDialog.dismiss();
+                try {
+                    ServiceID.add(sid);
+                    ServiceStatus.add("Service Completed");
+                    DateTime.add(dataSnapshot.child("DateTime").child("Date").getValue().toString() + ", " + dataSnapshot.child("DateTime").child("Time").getValue().toString());
+                    Amount.add(dataSnapshot.child("EstimateTime").getValue().toString());
+                    customAdapter.notifyDataSetChanged();
+                    progressDialog.dismiss();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override

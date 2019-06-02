@@ -47,7 +47,7 @@ public class CompletedServicesDetails extends AppCompatActivity {
     View alertLayout;
     private ListView listView;
     private TextView TV_Total;
-    private static final String TAG = "HistoryDetails";
+    private static final String TAG = "CompletedServicesDetails";
     FirebaseApp clientApp;
 
 

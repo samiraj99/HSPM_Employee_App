@@ -25,7 +25,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.sam.hspm_employee_app.Fragments.HistoryFragment;
 
 import java.util.ArrayList;
 
@@ -93,7 +92,7 @@ public class CompletedServices extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent(getContext(), HistoryDetails.class);
+                Intent i = new Intent(getContext(), CompletedServicesDetails.class);
                 i.putExtra("ServiceId", ServiceID.get(position));
                 startActivity(i);
                 clientApp.delete();
