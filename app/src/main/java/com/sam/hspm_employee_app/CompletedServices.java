@@ -28,6 +28,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class CompletedServices extends Fragment {
 
@@ -53,7 +54,7 @@ public class CompletedServices extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         v1 = inflater.inflate(R.layout.fragment_completed_services, container, false);
 
-        FirebaseApp.initializeApp(getContext());
+
         //Initialization
         Log.d(TAG, "onCreateView: Initializing variables");
 
@@ -68,7 +69,7 @@ public class CompletedServices extends Fragment {
             firebaseDatabase = FirebaseDatabase.getInstance(clientApp);
             clientDatabase = firebaseDatabase.getReference();
         }
-
+        FirebaseApp.initializeApp(Objects.requireNonNull(getContext()));
         databaseReference = FirebaseDatabase.getInstance().getReference();
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();

@@ -204,7 +204,7 @@ public class PendingServices extends Fragment {
 
         @Override
         public View getView(int position, View view, ViewGroup parent) {
-            view = getLayoutInflater().inflate(R.layout.history_custom_listview, null);
+            view = getLayoutInflater().inflate(R.layout.pending_services_custom_listview, null);
             TextView serviceStatus, dateAndTime, amount;
 
             serviceStatus = view.findViewById(R.id.servicestatus);

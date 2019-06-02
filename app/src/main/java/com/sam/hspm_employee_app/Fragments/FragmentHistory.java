@@ -19,8 +19,7 @@ public class FragmentHistory extends Fragment {
 
     private ViewPager viewPager;
     View v1;
-    CompletedServices completedServices = new CompletedServices();
-    PendingServices pendingServices = new PendingServices();
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

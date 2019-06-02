@@ -75,7 +75,7 @@ public class CompletedServicesDetails extends AppCompatActivity {
             FirebaseApp.initializeApp(CompletedServicesDetails.this, options, "ClientDatabase");
             clientApp = FirebaseApp.getInstance("ClientDatabase");
             firebaseDatabase = FirebaseDatabase.getInstance(clientApp);
-            clientDatabase = firebaseDatabase.getReference().child("CompletedServices").child(serviceId);
+            clientDatabase = firebaseDatabase.getReference();
         }
 
 
@@ -97,7 +97,7 @@ public class CompletedServicesDetails extends AppCompatActivity {
             progressDialog.setMessage("Loading");
             progressDialog.setCancelable(false);
             progressDialog.show();
-            clientDatabase.addValueEventListener(new ValueEventListener() {
+            clientDatabase.child("CompletedServices").child(serviceId).addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     ProblemDetails p = dataSnapshot.child("Problem").getValue(ProblemDetails.class);
@@ -111,7 +111,7 @@ public class CompletedServicesDetails extends AppCompatActivity {
                     }
                     TV_Address.setText(Address);
 
-                    RequestAcceptedBy = dataSnapshot.child("RequestAcceptedBy").getValue().toString();
+                    RequestAcceptedBy = dataSnapshot.child("Uid").getValue().toString();
                     retrieveEmployeeData(RequestAcceptedBy);
                 }
 
@@ -161,10 +161,10 @@ public class CompletedServicesDetails extends AppCompatActivity {
 
     private void retrieveEmployeeData(String requestAcceptedBy) {
         try {
-            databaseReference.child("Users").child(requestAcceptedBy).child("Profile").child("ProfileDetails").addListenerForSingleValueEvent(new ValueEventListener() {
+            clientDatabase.child("Users").child(requestAcceptedBy).child("Profile").child("ProfileInfo").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    TV_Employee_Name.setText(dataSnapshot.child("FullName").getValue(String.class));
+                    TV_Employee_Name.setText(dataSnapshot.child("Name").getValue(String.class));
                     progressDialog.dismiss();
                 }
 
@@ -181,7 +181,7 @@ public class CompletedServicesDetails extends AppCompatActivity {
     public void retrieveReceiptData() {
         Log.d(TAG, "retrieveReceiptData: Called");
         try {
-            clientDatabase.child("Receipt").addListenerForSingleValueEvent(new ValueEventListener() {
+            clientDatabase.child("CompletedServices").child(serviceId).child("Receipt").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
