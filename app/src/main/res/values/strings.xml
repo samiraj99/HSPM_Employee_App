@@ -42,6 +42,7 @@
     <string name="solved_issue">Solved Issue</string>
     <string name="client_details">Client Details</string>
     <string name="pick_up">Pick Up</string>
+    <string name="no_services_yet">No Services Yet</string>
 
     <string-array name="state_list">
         <item>Select State</item>

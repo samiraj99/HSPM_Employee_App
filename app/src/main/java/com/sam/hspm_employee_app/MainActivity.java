@@ -40,7 +40,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sam.hspm_employee_app.Fragments.ErrorFragment;
-import com.sam.hspm_employee_app.Fragments.HistoryFragment;
+import com.sam.hspm_employee_app.Fragments.FragmentHistory;
 import com.sam.hspm_employee_app.Fragments.MenuFragment;
 import com.sam.hspm_employee_app.Fragments.NewServiceFragment;
 import com.sam.hspm_employee_app.Fragments.NotVerified;
@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                                 break;
                             case R.id.action_item3:
-                                selectedFragment = HistoryFragment.newInstance();
+                                selectedFragment = new FragmentHistory();
                                 break;
                             case R.id.action_item4:
                                 selectedFragment = MenuFragment.newInstance();
