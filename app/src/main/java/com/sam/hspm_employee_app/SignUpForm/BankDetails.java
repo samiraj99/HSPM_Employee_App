@@ -27,9 +27,9 @@ import java.util.HashMap;
 
 public class BankDetails extends Fragment {
 
-    private EditText holdername, acno, ifsc;
+    private EditText holdername, acno, ifsc, paytm, googlepay;
     private Button proceed;
-    private TextInputLayout holder, acwrap, ifscwrap;
+    private TextInputLayout holder, acwrap, ifscwrap, paytmwrap, googlepaywrap;
     private DatabaseReference UserRefs;
     private View v1;
     private FirebaseAuth mAuth;
@@ -53,9 +53,13 @@ public class BankDetails extends Fragment {
         acno = v1.findViewById(R.id.account_no);
         ifsc = v1.findViewById(R.id.ifsc);
         holdername = v1.findViewById(R.id.holder_name);
+        paytm = v1.findViewById(R.id.paytm_no);
+        googlepay = v1.findViewById(R.id.google_pay);
         acwrap = v1.findViewById(R.id.account_noWrapper);
         ifscwrap = v1.findViewById(R.id.ifscWrapper);
         holder = v1.findViewById(R.id.holderWrapper);
+        paytmwrap = v1.findViewById(R.id.paytmWrapper);
+        googlepaywrap = v1.findViewById(R.id.googleWrapper);
         proceed = v1.findViewById(R.id.proceed);
 
         dialog = new ProgressDialog(getContext());
@@ -68,6 +72,8 @@ public class BankDetails extends Fragment {
                 String ac_no = acno.getText().toString();
                 String ifscode = ifsc.getText().toString();
                 String acholdername = holdername.getText().toString();
+                String payt = paytm.getText().toString();
+                String google = googlepay.getText().toString();
 
                 if (TextUtils.isEmpty(ac_no) && (ac_no.length() > 10)) {
                     acwrap.setError("Enter Valid Account Number");
@@ -87,22 +93,38 @@ public class BankDetails extends Fragment {
                     holder.setErrorEnabled(false);
                 }
 
-                dialog.show();
-                HashMap<String, Object> map = new HashMap<>();
-                map.put("AccountNo", ac_no);
-                map.put("IFSCCode", ifscode);
-                map.put("AcHolderName", acholdername);
-                UserRefs.updateChildren(map);
+                if (TextUtils.isEmpty(payt) && (payt.length() != 10)) {
+                    paytmwrap.setError("Enter 10 digit Paytm Number ");
+                } else {
+                    paytmwrap.setErrorEnabled(false);
+                }
 
-                FirebaseDatabase.getInstance().getReference("Users").child(currentUser).child("ProfileIsComplete").setValue("true").addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Intent i = new Intent(getActivity(), MainActivity.class);
-                        startActivity(i);
-                        getActivity().finish();
-                        dialog.dismiss();
-                    }
-                });
+                if (TextUtils.isEmpty(google) && (google.length() != 10)) {
+                    googlepaywrap.setError("Enter 10 digit Google Pay Number");
+                } else {
+                    googlepaywrap.setErrorEnabled(false);
+                }
+
+                if (google.length() != 0 && payt.length() != 0 && acholdername.length() != 0 && ifscode.length() != 0 && ac_no.length() != 0) {
+                    dialog.show();
+                    HashMap<String, Object> map = new HashMap<>();
+                    map.put("AccountNo", ac_no);
+                    map.put("IFSCCode", ifscode);
+                    map.put("AcHolderName", acholdername);
+                    map.put("PaytmNo", payt);
+                    map.put("GooglePayNo", google);
+                    UserRefs.updateChildren(map);
+
+                    FirebaseDatabase.getInstance().getReference("Users").child(currentUser).child("ProfileIsComplete").setValue("true").addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            Intent i = new Intent(getActivity(), MainActivity.class);
+                            startActivity(i);
+                            getActivity().finish();
+                            dialog.dismiss();
+                        }
+                    });
+                }
             }
         });
 

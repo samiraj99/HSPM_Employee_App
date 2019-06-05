@@ -3,21 +3,23 @@ package com.sam.hspm_employee_app.Fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.sam.hspm_employee_app.CompletedServices;
-import com.sam.hspm_employee_app.PendingServices;
 import com.sam.hspm_employee_app.R;
-import com.sam.hspm_employee_app.Pager;
+import com.sam.hspm_employee_app.SlidingTabLayout;
+import com.sam.hspm_employee_app.ViewPagerAdapter;
 
 public class FragmentHistory extends Fragment {
 
-    private ViewPager viewPager;
+    ViewPager view_pager;
+    ViewPagerAdapter adapter;
+    SlidingTabLayout tabs;
+    CharSequence Titles[]={"Completed Services","Pending \nServices"};
+    int Numboftabs =2;
     View v1;
 
     @Nullable
@@ -25,34 +27,26 @@ public class FragmentHistory extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         v1 = inflater.inflate(R.layout.fragment_history, container, false);
 
-        TabLayout tabLayout = v1.findViewById(R.id.tabLayout);
+        adapter =  new ViewPagerAdapter(getChildFragmentManager(),Titles,Numboftabs);
 
-        tabLayout.addTab(tabLayout.newTab().setText("Completed \nServices"));
-        tabLayout.addTab(tabLayout.newTab().setText("Pending \nServices"));
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        // Assigning ViewPager View and setting the adapter
+        view_pager = v1.findViewById(R.id.pager);
+        view_pager.setAdapter(adapter);
 
-        viewPager = v1.findViewById(R.id.pager);
+        // Assiging the Sliding Tab Layout View
+        tabs = v1.findViewById(R.id.tabLayout);
+        tabs.setDistributeEvenly(true); // To make the Tabs Fixed set this true, This makes the tabs Space Evenly in Available width
 
-        Pager adapter = new Pager(getChildFragmentManager(), tabLayout.getTabCount());
-
-        viewPager.setAdapter(adapter);
-
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        // Setting Custom Color for the Scroll bar indicator of the Tab View
+        tabs.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
             @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
+            public int getIndicatorColor(int position) {
+                return getResources().getColor(R.color.colorAccent);
             }
         });
+
+        // Setting the ViewPager For the SlidingTabsLayout
+        tabs.setViewPager(view_pager);
 
         return v1;
     }
